@@ -13,14 +13,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
+import com.mygdx.lildrak.component.BodyComponent;
 import com.mygdx.lildrak.entity.BodyEntityListener;
 import com.mygdx.lildrak.entity.EntityFactory;
 import com.mygdx.lildrak.entity.MyInputAdapter;
-import com.mygdx.lildrak.entity.components.BodyComponent;
 import com.mygdx.lildrak.entity.systems.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class GameScreen extends ScreenAdapter
-{
+@Component
+public class GameScreen extends ScreenAdapter {
+
     public static Engine engine;
     public static World world;
     public static int score;
@@ -34,9 +37,12 @@ public class GameScreen extends ScreenAdapter
     Room room;
     Spawner spawner;
     Preferences prefs;
+    @Autowired
+    private StartScreenAdapter startScreen;
+    @Autowired
+    private Lildrak lildrak;
 
-    public GameScreen()
-    {
+    public void initialize() {
         camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
@@ -66,10 +72,7 @@ public class GameScreen extends ScreenAdapter
 
         BodyEntityListener bodyRemoval = new BodyEntityListener();
         engine.addEntityListener(Family.all(BodyComponent.class).get(), bodyRemoval);
-    }
 
-    public void initialize()
-    {
         spawner.init();
         player = entityFactory.createBat(2f, 1f);
         hud = new Hud();
@@ -79,8 +82,7 @@ public class GameScreen extends ScreenAdapter
     }
 
     @Override
-    public void render(float deltaTime)
-    {
+    public void render(float deltaTime) {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -97,11 +99,9 @@ public class GameScreen extends ScreenAdapter
         if (playerHealth <= 0 || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) endGame();
     }
 
-    private void endGame()
-    {
+    private void endGame() {
         Gdx.input.setInputProcessor(null);
-        if (score > prefs.getInteger("score", 0))
-        {
+        if (score > prefs.getInteger("score", 0)) {
             prefs.putInteger("score", score);
             prefs.flush();
         }
@@ -110,23 +110,20 @@ public class GameScreen extends ScreenAdapter
         pause();
         // Change the screen immediately, if player restarted the game
         // Add a delay, if player died
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) Lildrak.game.setScreen(Lildrak.startScreen);
-        else Timer.schedule(new Timer.Task()
-        {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) lildrak.game.setScreen(startScreen);
+        else Timer.schedule(new Timer.Task() {
             @Override
-            public void run()
-            {
-                Lildrak.game.setScreen(Lildrak.startScreen);
+            public void run() {
+                lildrak.game.setScreen(startScreen);
             }
         }, 0.5f);
     }
 
-    public void show()
-    {
+    public void show() {
         initialize();
     }
-    public void hide()
-    {
+
+    public void hide() {
         engine.removeAllEntities();
     }
 }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.lildrak.entity.EntityFactory;
-import com.mygdx.lildrak.entity.components.BodyComponent;
+import com.mygdx.lildrak.component.BodyComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +97,7 @@ public class Spawner {
         for (Entity e : windows) {
             ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
             BodyComponent bc = bm.get(e);
-            windowBodies.add(bc.body);
+            windowBodies.add(bc.getBody());
         }
 
         currentState = STATE.SPAWN;

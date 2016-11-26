@@ -40,6 +40,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.ashley:ashley:1.6.0"
+        compile 'org.springframework:spring-context:4.3.4.RELEASE'
     }
 }
 
@@ -51,6 +52,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:1.6.0"
+        compile 'org.springframework:spring-context:4.3.4.RELEASE'
     }
 }
 

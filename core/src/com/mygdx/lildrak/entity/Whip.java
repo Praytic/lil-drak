@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mygdx.lildrak.Constants;
 import com.mygdx.lildrak.GameScreen;
-import com.mygdx.lildrak.entity.components.*;
+import com.mygdx.lildrak.component.*;
 
 public class Whip extends Entity {
 
@@ -32,10 +32,11 @@ public class Whip extends Entity {
 
         rectangle.dispose();
 
-        add(new Transform(x, y, z, angle));
+        add(new TransformComponent(x, y, z, angle));
         add(new TextureComponent(texture));
         add(new BodyComponent(body));
-        add(new VerticalLimit(limit));
-        add(new Damage(damage));
+        add(new VerticalLimitComponent(limit));
+        add(new DamageComponent(damage));
+        add(new NameComponent("whip"));
     }
 }

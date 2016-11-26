@@ -1,0 +1,23 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Java template
+*.class
+.idea
+.gradle
+.DS_Store
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+core/build/classes/main/com/mygdx/lildrak/component/
+core/build/dependency-cache/
+core/build/tmp/compileJava/
+desktop/build/dependency-cache/
+desktop/build/tmp/compileJava/

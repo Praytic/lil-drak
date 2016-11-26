@@ -11,9 +11,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class LoadScreen extends ScreenAdapter
-{
+@Component
+public class LoadScreen extends ScreenAdapter {
+
     SpriteBatch batch;
     Texture intro;
     Sprite fadeBox;
@@ -21,10 +24,13 @@ public class LoadScreen extends ScreenAdapter
     int fadeDirection = -1;
     Music music;
     float minimumShowTime = 100;
+    @Autowired
+    private StartScreenAdapter startScreen;
+    @Autowired
+    private Lildrak lildrak;
 
     @Override
-    public void show()
-    {
+    public void show() {
         batch = Lildrak.spriteBatch;
         intro = new Texture(AssetPaths.INTRO);
         fadeBox = new Sprite(new Texture(AssetPaths.FADE));
@@ -33,8 +39,7 @@ public class LoadScreen extends ScreenAdapter
         music.setLooping(true);
         music.play();
 
-        for (String e : AssetPaths.textureList)
-        {
+        for (String e : AssetPaths.textureList) {
             Lildrak.ASSETS.load(e, Texture.class);
         }
         Lildrak.ASSETS.load(AssetPaths.PICKUP, Sound.class);
@@ -42,14 +47,10 @@ public class LoadScreen extends ScreenAdapter
         Lildrak.ASSETS.load(AssetPaths.MUSIC_GAME, Music.class);
         Lildrak.ASSETS.load(AssetPaths.FONT, BitmapFont.class);
         Lildrak.ASSETS.finishLoading();
-
-        Lildrak.startScreen = new StartScreen();
-        Lildrak.gameScreen = new GameScreen();
     }
 
     @Override
-    public void render(float deltaTime)
-    {
+    public void render(float deltaTime) {
         Gdx.gl.glClearColor(0.5f, 0.5f, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -63,29 +64,26 @@ public class LoadScreen extends ScreenAdapter
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
             minimumShowTime = 0;
 
-        if (Lildrak.ASSETS.update() && minimumShowTime <= 0)
-        {
-            Lildrak.game.setScreen(Lildrak.startScreen);
+        if (Lildrak.ASSETS.update() && minimumShowTime <= 0) {
+            lildrak.game.setScreen(startScreen);
             music.stop();
         }
     }
 
-    private void updateFadeBoxColor()
-    {
+    private void updateFadeBoxColor() {
         fadeBoxColor = fadeBox.getColor();
-        if ( (fadeDirection == -1 && fadeBoxColor.a < 0.1f) || (fadeDirection == 1 && fadeBoxColor.a > 0.7f) )
+        if ((fadeDirection == -1 && fadeBoxColor.a < 0.1f) || (fadeDirection == 1 && fadeBoxColor.a > 0.7f))
             fadeDirection = -fadeDirection;
         fadeBox.setColor(fadeBoxColor.r, fadeBoxColor.g, fadeBoxColor.b, fadeBoxColor.a + fadeDirection * 0.009f);
     }
 
     @Override
-    public void hide()
-    {
+    public void hide() {
         dispose();
     }
+
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         intro.dispose();
         fadeBox.getTexture().dispose();
         music.dispose();
