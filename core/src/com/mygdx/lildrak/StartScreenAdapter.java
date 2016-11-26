@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartScreenAdapter extends ScreenAdapter {
 
-    private SpriteBatch batch;
     private Texture background;
     private Texture controlsHidingTexture;
     private Sprite fadeBox;
@@ -42,15 +40,15 @@ public class StartScreenAdapter extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        batch.begin();
+        Lildrak.spriteBatch.begin();
 
-        batch.draw(background, 0, 0);
-        font.draw(batch, "Difficulty: " + difficulty, 1000, 900);
+        Lildrak.spriteBatch.draw(background, 0, 0);
+        font.draw(Lildrak.spriteBatch, "Difficulty: " + difficulty, 1000, 900);
         updateFadeBoxColor();
-        fadeBox.draw(batch);
+        fadeBox.draw(Lildrak.spriteBatch);
         if (!firstLaunch) drawScore(deltaTime);
 
-        batch.end();
+        Lildrak.spriteBatch.end();
 
         getInput();
     }
@@ -63,17 +61,17 @@ public class StartScreenAdapter extends ScreenAdapter {
     }
 
     private void drawScore(float deltaTime) {
-        batch.draw(controlsHidingTexture, 300, 400); // hide controls
+        Lildrak.spriteBatch.draw(controlsHidingTexture, 300, 400); // hide controls
         font.setColor(defaultColor);
-        font.draw(batch, "High ScoreComponent: ", 450, 500);
+        font.draw(Lildrak.spriteBatch, "High Score: ", 450, 500);
         if (lastScore == highScore) {
             if (frameCounter >= 0.5f) {
                 randomColor = new Color(Lildrak.random.nextFloat(), Lildrak.random.nextFloat(), Lildrak.random.nextFloat(), 1f);
                 font.setColor(randomColor);
             } else frameCounter += deltaTime;
-        } else font.draw(batch, ("ScoreComponent: " + lastScore), 450, 600);
+        } else font.draw(Lildrak.spriteBatch, ("Score: " + lastScore), 450, 600);
 
-        font.draw(batch, "" + highScore, 670, 500);
+        font.draw(Lildrak.spriteBatch, "" + highScore, 670, 500);
     }
 
     private void getInput() {
@@ -89,7 +87,7 @@ public class StartScreenAdapter extends ScreenAdapter {
         difficulty = Gdx.app.getPreferences("My Preferences").getInteger("difficulty", 0);
 
         // Skip screen by pressing space
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
@@ -100,12 +98,10 @@ public class StartScreenAdapter extends ScreenAdapter {
             lildrak.game.setScreen(gameScreen);
             font.setColor(defaultColor);
         }
-    }
+      }
 
     @Override
     public void show() {
-        batch = Lildrak.spriteBatch;
-
         background = Lildrak.ASSETS.get(AssetPaths.BACKGROUND);
         controlsHidingTexture = Lildrak.ASSETS.get(AssetPaths.BLACK);
         Texture fadeBoxTexture = Lildrak.ASSETS.get(AssetPaths.FADE_BLACK);

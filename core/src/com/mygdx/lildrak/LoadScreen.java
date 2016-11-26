@@ -10,14 +10,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LoadScreen extends ScreenAdapter {
 
-    SpriteBatch batch;
     Texture intro;
     Sprite fadeBox;
     Color fadeBoxColor;
@@ -31,7 +29,6 @@ public class LoadScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        batch = Lildrak.spriteBatch;
         intro = new Texture(AssetPaths.INTRO);
         fadeBox = new Sprite(new Texture(AssetPaths.FADE));
         fadeBox.setPosition(400, 170);
@@ -54,11 +51,11 @@ public class LoadScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0.5f, 0.5f, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        batch.begin();
-        batch.draw(intro, 0, 0);
+        Lildrak.spriteBatch.begin();
+        Lildrak.spriteBatch.draw(intro, 0, 0);
         updateFadeBoxColor();
-        fadeBox.draw(batch);
-        batch.end();
+        fadeBox.draw(Lildrak.spriteBatch);
+        Lildrak.spriteBatch.end();
 
         minimumShowTime -= deltaTime;
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))

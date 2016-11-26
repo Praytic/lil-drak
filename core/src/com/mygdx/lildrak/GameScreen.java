@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,13 +35,21 @@ public class GameScreen extends ScreenAdapter {
     Entity player;
     Room room;
     Spawner spawner;
-    Preferences prefs;
     @Autowired
     private StartScreenAdapter startScreen;
     @Autowired
     private Lildrak lildrak;
+    private boolean isCreated = false;
 
     public void initialize() {
+        if (isCreated) {
+            spawner.init();
+            player = entityFactory.createBat(2f, 1f);
+            hud = new Hud();
+            score = 0;
+            playerHealth = Constants.PLAYER_HEALTH;
+            return;
+        }
         camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
@@ -52,7 +59,6 @@ public class GameScreen extends ScreenAdapter {
         entityFactory = new EntityFactory();
         spawner = new Spawner(entityFactory);
         room = new Room(world);
-        prefs = Gdx.app.getPreferences("My Preferences");
 
         engine = Lildrak.engine;
         engine.addSystem(new PhysicsSystem(0)); // transform must be updated before rendering
@@ -78,7 +84,8 @@ public class GameScreen extends ScreenAdapter {
         hud = new Hud();
         score = 0;
         playerHealth = Constants.PLAYER_HEALTH;
-        Gdx.input.setInputProcessor(inputAdapter);
+
+        isCreated = true;
     }
 
     @Override
@@ -96,22 +103,16 @@ public class GameScreen extends ScreenAdapter {
 
         spawner.run(deltaTime);
 
-        if (playerHealth <= 0 || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) endGame();
+        if (playerHealth <= 0 || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) endGame();
     }
 
     private void endGame() {
-        Gdx.input.setInputProcessor(null);
-        if (score > prefs.getInteger("score", 0)) {
-            prefs.putInteger("score", score);
-            prefs.flush();
+        if (score > Gdx.app.getPreferences("My Preferences").getInteger("score", 0)) {
+            Gdx.app.getPreferences("My Preferences").putInteger("score", score);
+            Gdx.app.getPreferences("My Preferences").flush();
         }
-        prefs.putInteger("lastScore", score);
-
-        pause();
-        // Change the screen immediately, if player restarted the game
-        // Add a delay, if player died
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) lildrak.game.setScreen(startScreen);
-        else Timer.schedule(new Timer.Task() {
+        Gdx.app.getPreferences("My Preferences").putInteger("lastScore", score);
+        Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 lildrak.game.setScreen(startScreen);
