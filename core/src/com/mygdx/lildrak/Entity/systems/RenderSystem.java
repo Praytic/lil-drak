@@ -3,23 +3,14 @@ package com.mygdx.lildrak.entity.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.math.Vector2;
-import com.mygdx.lildrak.Constants;
 import com.mygdx.lildrak.entity.Mappers;
-import com.mygdx.lildrak.entity.components.BodyComponent;
 import com.mygdx.lildrak.entity.components.ColorComponent;
 import com.mygdx.lildrak.entity.components.Transform;
 import com.mygdx.lildrak.entity.components.TextureComponent;
 import com.mygdx.lildrak.Lildrak;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class RenderSystem extends SortedIteratingSystem
 {

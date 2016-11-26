@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.lildrak.entity.EntityFactory;
 import com.mygdx.lildrak.entity.components.BodyComponent;
@@ -13,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Spawner
-{
+public class Spawner {
     EntityFactory entityFactory;
     Preferences prefs;
     int difficultySetting; // from preferences
@@ -53,30 +51,29 @@ public class Spawner
     List<Float> currentGauntlet;
 
     List<List<Float>> gauntletList = new ArrayList<List<Float>>
-    (Arrays.asList(gauntlet1a, gauntlet1a, gauntlet1b, gauntlet1b,
-    gauntlet1c, gauntlet1c, gauntlet1d, gauntlet1d,
-    gauntlet1e, gauntlet1e, gauntlet1f, gauntlet1f,
-    gauntlet2a, gauntlet2a, gauntlet2b, gauntlet2b,
-    gauntlet2c, gauntlet2c, gauntlet2d, gauntlet2d,
-    gauntlet2e, gauntlet2e, gauntlet2g, gauntlet2f,
-    gauntlet2i, gauntlet3a, gauntlet3b, gauntlet3c,
-    gauntlet3d, gauntlet3e, gauntlet3f));
+            (Arrays.asList(gauntlet1a, gauntlet1a, gauntlet1b, gauntlet1b,
+                    gauntlet1c, gauntlet1c, gauntlet1d, gauntlet1d,
+                    gauntlet1e, gauntlet1e, gauntlet1f, gauntlet1f,
+                    gauntlet2a, gauntlet2a, gauntlet2b, gauntlet2b,
+                    gauntlet2c, gauntlet2c, gauntlet2d, gauntlet2d,
+                    gauntlet2e, gauntlet2e, gauntlet2g, gauntlet2f,
+                    gauntlet2i, gauntlet3a, gauntlet3b, gauntlet3c,
+                    gauntlet3d, gauntlet3e, gauntlet3f));
     int streakCounter;
     int maxStreak = 2;
 
-    List<Body> windowBodies = new ArrayList<Body>();
+    List<com.badlogic.gdx.physics.box2d.Body> windowBodies = new ArrayList<com.badlogic.gdx.physics.box2d.Body>();
 
-    enum STATE { SPAWN, LEVEL_CHANGE }
+    enum STATE {SPAWN, LEVEL_CHANGE}
+
     static STATE currentState;
 
-    public Spawner(EntityFactory entityFactory)
-    {
+    public Spawner(EntityFactory entityFactory) {
         this.entityFactory = entityFactory;
         prefs = Gdx.app.getPreferences("My Preferences");
     }
 
-    public void init()
-    {
+    public void init() {
         difficultySetting = prefs.getInteger("difficulty", 0);
         // EASY:2.5 MEDIUM:2.0 HARD:1.5
         currentSpawnRate = Constants.SPAWN_RATE - Constants.SPAWN_RATE_DIFFICULTY_INCREMENT * difficultySetting;
@@ -97,8 +94,7 @@ public class Spawner
         windows.add(entityFactory.createWindow(0.45f, -5f, 0.45f, -1f, Constants.SCROLL_SPEED));
         windows.add(entityFactory.createWindow(2f, -7f, 2f, -3f, Constants.SCROLL_SPEED));
         windows.add(entityFactory.createWindow(3.55f, -5f, 3.55f, -1f, Constants.SCROLL_SPEED));
-        for (Entity e : windows)
-        {
+        for (Entity e : windows) {
             ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
             BodyComponent bc = bm.get(e);
             windowBodies.add(bc.body);
@@ -107,24 +103,18 @@ public class Spawner
         currentState = STATE.SPAWN;
     }
 
-    public void run(float deltaTime)
-    {
-        if (currentState == STATE.SPAWN)
-        {
+    public void run(float deltaTime) {
+        if (currentState == STATE.SPAWN) {
             spawnTimer -= deltaTime;
-            if (spawnTimer <= 0)
-            {
+            if (spawnTimer <= 0) {
                 currentState = STATE.LEVEL_CHANGE;
                 spawnTimer = Constants.LEVEL_TIME;
             }
             spawnWhips(deltaTime);
             spawnCollectibles(deltaTime);
-        }
-        else if (currentState == STATE.LEVEL_CHANGE)
-        {
+        } else if (currentState == STATE.LEVEL_CHANGE) {
             levelChangeTimer -= deltaTime;
-            if (levelChangeTimer <= 0)
-            {
+            if (levelChangeTimer <= 0) {
                 currentState = STATE.SPAWN;
                 if (currentLevel < Constants.MAX_LEVEL) changeLevel();
                 levelChangeTimer = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
@@ -132,13 +122,11 @@ public class Spawner
         }
     }
 
-    private void changeLevel()
-    {
+    private void changeLevel() {
         currentSpawnRate -= Constants.SPAWN_RATE_MODIFIER;
         currentScrollSpeed *= Constants.SCROLL_SPEED_MODIFIER;
         levelChangeDuration = Constants.VIEWPORT_HEIGHT / currentScrollSpeed + 2f;
-        for (Body e : windowBodies)
-        {
+        for (com.badlogic.gdx.physics.box2d.Body e : windowBodies) {
             e.setLinearVelocity(0, currentScrollSpeed);
         }
         spawnSkullMaybe();
@@ -146,34 +134,28 @@ public class Spawner
         currentLevel++;
     }
 
-    private void spawnWhips(float deltaTime)
-    {
+    private void spawnWhips(float deltaTime) {
         if (whipTimer > 0) whipTimer -= deltaTime;
-        else
-        {
+        else {
             spawnRandomGauntlet();
             whipTimer = currentSpawnRate;
         }
     }
 
-    private void spawnCollectibles(float deltaTime)
-    {
+    private void spawnCollectibles(float deltaTime) {
         if (collectibleTimer > 0) collectibleTimer -= deltaTime;
-        else
-        {
+        else {
             // spawn collectibles with a collectibleChance and increase likelihood of spawn by difficulty
             // highest difficulty(3) has 100 % spawn chance
             float rand = Lildrak.random.nextInt((int) (1 / Constants.COLLECTIBLE_CHANCE));
             rand += currentLevel;
-            if (rand >= 1)
-            {
+            if (rand >= 1) {
                 float x = Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f;
                 spawnRandomCollectible(x);
             }
             rand = Lildrak.random.nextInt((int) (1 / Constants.COLLECTIBLE_CHANCE));
             rand += currentLevel;
-            if (rand >= 1)
-            {
+            if (rand >= 1) {
                 float x = Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f;
                 spawnRandomCollectible(x);
             }
@@ -181,13 +163,11 @@ public class Spawner
         }
     }
 
-    private void spawnRandomGauntlet()
-    {
+    private void spawnRandomGauntlet() {
         currentGauntlet = gauntletList.get(Lildrak.random.nextInt(gauntletList.size()));
         // Catch streaks greater than 2 and reroll
         if (currentGauntlet.equals(lastGauntlet)) streakCounter++;
-        if (streakCounter >= maxStreak)
-        {
+        if (streakCounter >= maxStreak) {
             currentGauntlet = gauntletList.get(Lildrak.random.nextInt(gauntletList.size()));
             streakCounter = 0;
         }
@@ -196,14 +176,13 @@ public class Spawner
         lastGauntlet = currentGauntlet; // save last spawned gauntlet
     }
 
-    private void spawnGauntlet(List<Float> gauntlet)
-    {
-        for (Float e : gauntlet)
-            entityFactory.createWhip(e, -1f, currentScrollSpeed);
+    private void spawnGauntlet(List<Float> gauntlet) {
+        for (Float e : gauntlet) {
+            GameScreen.engine.addEntity(entityFactory.createWhip(e, -1f, currentScrollSpeed));
+        }
     }
 
-    private void spawnRandomCollectible(float x)
-    {
+    private void spawnRandomCollectible(float x) {
         float offset = Lildrak.random.nextInt(3) / 10.0f - 0.1f;
         // Randomly spawn money, lollipop or candy with 1-3-6 average ratio
         // Money doesn't spawn on the easiest difficulty
@@ -213,8 +192,7 @@ public class Spawner
         else entityFactory.createCandy(x, colY + offset, currentScrollSpeed);
     }
 
-    private void spawnSkullMaybe()
-    {
+    private void spawnSkullMaybe() {
         int rand = Lildrak.random.nextInt(2);
         if (rand >= 1) entityFactory.createSkull(5f, 0.5f, -currentScrollSpeed);
     }

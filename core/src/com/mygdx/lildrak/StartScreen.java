@@ -36,16 +36,16 @@ public class StartScreen extends ScreenAdapter
     {
         batch = Lildrak.spriteBatch;
 
-        background = Lildrak.assets.get(AssetPaths.BACKGROUND);
-        controlsHidingTexture = Lildrak.assets.get(AssetPaths.BLACK);
-        Texture fadeBoxTexture = Lildrak.assets.get(AssetPaths.FADE_BLACK);
+        background = Lildrak.ASSETS.get(AssetPaths.BACKGROUND);
+        controlsHidingTexture = Lildrak.ASSETS.get(AssetPaths.BLACK);
+        Texture fadeBoxTexture = Lildrak.ASSETS.get(AssetPaths.FADE_BLACK);
         fadeBox = new Sprite(fadeBoxTexture);
         fadeBox.setPosition(380, 60);
 
-        music = Lildrak.assets.get(AssetPaths.MUSIC_GAME);
+        music = Lildrak.ASSETS.get(AssetPaths.MUSIC_GAME);
         music.setLooping(true);
 
-        font = Lildrak.assets.get(AssetPaths.FONT);
+        font = Lildrak.ASSETS.get(AssetPaths.FONT);
         defaultColor = new Color(1f, 1f, 1f, 1f);
 
         prefs = Gdx.app.getPreferences("My Preferences");

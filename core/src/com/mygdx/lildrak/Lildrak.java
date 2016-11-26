@@ -22,7 +22,7 @@ public class Lildrak extends ApplicationAdapter
         }
     };
     public static final Logger logger = new Logger("");
-    public static final AssetManager assets = new AssetManager();
+    public static final AssetManager ASSETS = new AssetManager();
     public static final Random random = new Random();
     public static final Engine engine = new Engine();
     public static final World world  = new World(new Vector2(0f, 0f), false);
@@ -38,7 +38,7 @@ public class Lildrak extends ApplicationAdapter
             logger.setLevel(Logger.NONE); // set 'Logger.NONE' to turn off logging
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-            Texture.setAssetManager(assets);
+            Texture.setAssetManager(ASSETS);
 
             spriteBatch = new SpriteBatch();
 
@@ -69,7 +69,7 @@ public class Lildrak extends ApplicationAdapter
     public void dispose()
     {
         gameScreen.dispose();
-        assets.dispose();
+        ASSETS.dispose();
         world.dispose();
         if (spriteBatch != null) spriteBatch.dispose();
         if (startScreen != null) startScreen.dispose();

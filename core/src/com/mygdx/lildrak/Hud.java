@@ -30,10 +30,10 @@ public class Hud
     public Hud()
     {
         this.batch = Lildrak.spriteBatch;
-        this.font = Lildrak.assets.get(AssetPaths.FONT);
+        this.font = Lildrak.ASSETS.get(AssetPaths.FONT);
         this.defaultFontScale = new Vector2(font.getScaleX(), font.getScaleY());
 
-        heartTexture = Lildrak.assets.get(AssetPaths.HEART);
+        heartTexture = Lildrak.ASSETS.get(AssetPaths.HEART);
         layout = new GlyphLayout();
     }
 

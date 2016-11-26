@@ -2,11 +2,6 @@ package com.mygdx.lildrak.entity.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.utils.Timer;
-import com.mygdx.lildrak.Lildrak;
 import com.mygdx.lildrak.entity.Mappers;
 import com.mygdx.lildrak.entity.components.BodyComponent;
 import com.mygdx.lildrak.entity.components.PlayerMovement;

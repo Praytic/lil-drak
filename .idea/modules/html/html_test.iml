@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":html:test" external.linked.project.path="$MODULE_DIR$/../../../html" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="lil-drak" external.system.module.type="sourceSet" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="gwt" name="GWT">
+      <configuration>
+        <setting name="gwtSdkUrl" value="file://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-dev/2.6.0" />
+        <setting name="gwtSdkType" value="gradle" />
+      </configuration>
+    </facet>
+    <facet type="gwt" name="GWT">
+      <configuration>
+        <setting name="gwtSdkUrl" value="file://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-dev/2.6.1" />
+        <setting name="gwtSdkType" value="gradle" />
+      </configuration>
+    </facet>
+    <facet type="gwt" name="GWT">
+      <configuration>
+        <setting name="gwtSdkUrl" value="file://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-dev/2.6.0" />
+        <setting name="gwtSdkType" value="gradle" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+    <output-test url="file://$MODULE_DIR$/../../../html/build/classes/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../html/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../html/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../html/src/test/resources" type="java-test-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="html_main" />
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../html/src" />
+          <root url="file://$MODULE_DIR$/../../../html/src/test/java" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="core_main" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-backend-gwt:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-backend-gwt:sources:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:sources:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-box2d:sources:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-box2d:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-box2d-gwt:sources:1.6.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.ashley:ashley:1.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.gwt:gwt-user:2.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: javax.validation:validation-api:1.0.0.GA" level="project" />
+    <orderEntry type="library" name="Gradle: javax.validation:validation-api:sources:1.0.0.GA" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.gwt:gwt-codeserver:2.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.gwt:gwt-dev:2.6.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.gwt:gwt-user:2.6.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.gwt:gwt-servlet:2.6.0" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="html_main" />
+</module>

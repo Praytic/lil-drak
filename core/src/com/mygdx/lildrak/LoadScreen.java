@@ -35,13 +35,13 @@ public class LoadScreen extends ScreenAdapter
 
         for (String e : AssetPaths.textureList)
         {
-            Lildrak.assets.load(e, Texture.class);
+            Lildrak.ASSETS.load(e, Texture.class);
         }
-        Lildrak.assets.load(AssetPaths.PICKUP, Sound.class);
-        Lildrak.assets.load(AssetPaths.HURT, Sound.class);
-        Lildrak.assets.load(AssetPaths.MUSIC_GAME, Music.class);
-        Lildrak.assets.load(AssetPaths.FONT, BitmapFont.class);
-        Lildrak.assets.finishLoading();
+        Lildrak.ASSETS.load(AssetPaths.PICKUP, Sound.class);
+        Lildrak.ASSETS.load(AssetPaths.HURT, Sound.class);
+        Lildrak.ASSETS.load(AssetPaths.MUSIC_GAME, Music.class);
+        Lildrak.ASSETS.load(AssetPaths.FONT, BitmapFont.class);
+        Lildrak.ASSETS.finishLoading();
 
         Lildrak.startScreen = new StartScreen();
         Lildrak.gameScreen = new GameScreen();
@@ -63,7 +63,7 @@ public class LoadScreen extends ScreenAdapter
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
             minimumShowTime = 0;
 
-        if (Lildrak.assets.update() && minimumShowTime <= 0)
+        if (Lildrak.ASSETS.update() && minimumShowTime <= 0)
         {
             Lildrak.game.setScreen(Lildrak.startScreen);
             music.stop();
