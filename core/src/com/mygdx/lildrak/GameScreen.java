@@ -103,7 +103,9 @@ public class GameScreen extends ScreenAdapter {
 
         spawner.run(deltaTime);
 
-        if (playerHealth <= 0 || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) endGame();
+        if (playerHealth <= 0 && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            endGame();
+        }
     }
 
     private void endGame() {

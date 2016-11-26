@@ -21,3 +21,4 @@ core/build/dependency-cache/
 core/build/tmp/compileJava/
 desktop/build/dependency-cache/
 desktop/build/tmp/compileJava/
+/core/src/com/mygdx/lildrak/Asset.java

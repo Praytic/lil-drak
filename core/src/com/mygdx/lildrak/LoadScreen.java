@@ -29,20 +29,20 @@ public class LoadScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        intro = new Texture(AssetPaths.INTRO);
-        fadeBox = new Sprite(new Texture(AssetPaths.FADE));
+        intro = new Texture(Asset.Image.INTRO.getFileName());
+        fadeBox = new Sprite(new Texture(Asset.Image.FADE.getFileName()));
         fadeBox.setPosition(400, 170);
-        music = Gdx.audio.newMusic(Gdx.files.internal(AssetPaths.MUSIC));
+        music = Gdx.audio.newMusic(Gdx.files.internal(Asset.Sound.MUSIC.getFileName()));
         music.setLooping(true);
         music.play();
 
-        for (String e : AssetPaths.textureList) {
-            Lildrak.ASSETS.load(e, Texture.class);
+        for (Asset assetType : Asset.Image.values()) {
+            Lildrak.ASSETS.load(assetType.getFileName(), Texture.class);
         }
-        Lildrak.ASSETS.load(AssetPaths.PICKUP, Sound.class);
-        Lildrak.ASSETS.load(AssetPaths.HURT, Sound.class);
-        Lildrak.ASSETS.load(AssetPaths.MUSIC_GAME, Music.class);
-        Lildrak.ASSETS.load(AssetPaths.FONT, BitmapFont.class);
+        Lildrak.ASSETS.load(Asset.Sound.PICKUP.getFileName(), Sound.class);
+        Lildrak.ASSETS.load(Asset.Sound.HURT.getFileName(), Sound.class);
+        Lildrak.ASSETS.load(Asset.Sound.MUSIC_GAME.getFileName(), Music.class);
+        Lildrak.ASSETS.load(Asset.Font.DEFAULT.getFileName(), BitmapFont.class);
         Lildrak.ASSETS.finishLoading();
     }
 

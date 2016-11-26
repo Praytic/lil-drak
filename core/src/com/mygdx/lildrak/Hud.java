@@ -25,10 +25,10 @@ public class Hud {
     int juiceScale = 10000;
 
     public Hud() {
-        this.font = Lildrak.ASSETS.get(AssetPaths.FONT);
+        this.font = Lildrak.ASSETS.get(Asset.Font.DEFAULT.getFileName());
         this.defaultFontScale = new Vector2(font.getScaleX(), font.getScaleY());
 
-        heartTexture = Lildrak.ASSETS.get(AssetPaths.HEART);
+        heartTexture = Lildrak.ASSETS.get(Asset.Image.HEART.getFileName());
         layout = new GlyphLayout();
     }
 

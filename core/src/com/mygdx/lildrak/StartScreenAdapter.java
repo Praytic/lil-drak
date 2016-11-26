@@ -102,16 +102,16 @@ public class StartScreenAdapter extends ScreenAdapter {
 
     @Override
     public void show() {
-        background = Lildrak.ASSETS.get(AssetPaths.BACKGROUND);
-        controlsHidingTexture = Lildrak.ASSETS.get(AssetPaths.BLACK);
-        Texture fadeBoxTexture = Lildrak.ASSETS.get(AssetPaths.FADE_BLACK);
+        background = Lildrak.ASSETS.get(Asset.Image.BACKGROUND.getFileName());
+        controlsHidingTexture = Lildrak.ASSETS.get(Asset.Image.BLACK.getFileName());
+        Texture fadeBoxTexture = Lildrak.ASSETS.get(Asset.Image.FADE_BLACK.getFileName());
         fadeBox = new Sprite(fadeBoxTexture);
         fadeBox.setPosition(380, 60);
 
-        music = Lildrak.ASSETS.get(AssetPaths.MUSIC_GAME);
+        music = Lildrak.ASSETS.get(Asset.Sound.MUSIC_GAME.getFileName());
         music.setLooping(true);
 
-        font = Lildrak.ASSETS.get(AssetPaths.FONT);
+        font = Lildrak.ASSETS.get(Asset.Font.DEFAULT.getFileName());
         defaultColor = new Color(1f, 1f, 1f, 1f);
 
         difficulty = Gdx.app.getPreferences("My Preferences").getInteger("difficulty", 0);

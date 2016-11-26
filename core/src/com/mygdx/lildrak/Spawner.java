@@ -187,9 +187,9 @@ public class Spawner {
         // Randomly spawn money, lollipop or candy with 1-3-6 average ratio
         // Money doesn't spawn on the easiest difficulty
         int i = Lildrak.random.nextInt(10);
-        if (i == 0 && currentLevel > 1) entityFactory.createMoney(x, colY + offset, currentScrollSpeed);
-        else if (i == 1 || i == 2 || i == 3) entityFactory.createLollipop(x, colY + offset, currentScrollSpeed);
-        else entityFactory.createCandy(x, colY + offset, currentScrollSpeed);
+        if (i == 0 && currentLevel > 1) entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
+        else if (i == 1 || i == 2 || i == 3) entityFactory.createMediumBonus(x, colY + offset, currentScrollSpeed);
+        else entityFactory.createSmallBonus(x, colY + offset, currentScrollSpeed);
     }
 
     private void spawnSkullMaybe() {
