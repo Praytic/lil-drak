@@ -12,7 +12,6 @@ import com.mygdx.lildrak.Constants;
 import com.mygdx.lildrak.GameScreen;
 import com.mygdx.lildrak.Lildrak;
 import com.mygdx.lildrak.component.*;
-import com.mygdx.lildrak.component.TransformComponent;
 
 import static com.mygdx.lildrak.Constants.WHIP_Z;
 
@@ -25,28 +24,33 @@ public class EntityFactory {
     }
 
     public Entity createSmallBonus(float x, float y, float ySpeed) {
-        return createCollectible(x, y, ySpeed, Asset.Image.CANDY.getFileName(), 1);
+        return createCollectible(x, y, ySpeed, 1, CollectibleType.CANDY);
     }
 
     public Entity createMediumBonus(float x, float y, float ySpeed) {
-        return createCollectible(x, y, ySpeed, Asset.Image.LOLLIPOP.getFileName(), 3);
+        return createCollectible(x, y, ySpeed, 3, CollectibleType.LOLLIPOP);
     }
 
     public Entity createLargeBonus(float x, float y, float ySpeed) {
-        return createCollectible(x, y, ySpeed, Asset.Image.MONEY.getFileName(), 5);
+        return createCollectible(x, y, ySpeed, 5, CollectibleType.MONEY);
     }
 
     public Entity createSmallLoss(float x, float y, float ySpeed) {
-        return createCollectible(x, y, ySpeed, Asset.Image.MONEY.getFileName(), 5);
+        return createCollectible(x, y, ySpeed, -2, CollectibleType.FLAME);
     }
 
-    public Entity createCollectible(float x, float y, float ySpeed, String asset, int value) {
+    public Entity createCollectible(float x, float y, float ySpeed, int value, CollectibleType collectibleType) {
         Entity entity = new Entity();
 
-        Texture texture = Lildrak.ASSETS.get(asset);
+        float width = collectibleType.getWidth() * Constants.METER_TO_PIXEL;
+        float height = collectibleType.getHeight() * Constants.METER_TO_PIXEL;
+        if (collectibleType == CollectibleType.FLAME) {
+            entity.add(new FireAnimationComponent(
+                    collectibleType.getTextures().get(0), collectibleType.getTextures().get(1)));
+        }
+        Texture texture = collectibleType.getTextures().get(0);
         TextureRegion region = new TextureRegion(texture);
-        float width = texture.getWidth() * Constants.METER_TO_PIXEL;
-        float height = texture.getHeight() * Constants.METER_TO_PIXEL;
+
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(x, y);
@@ -65,14 +69,15 @@ public class EntityFactory {
 
         Sound hurtSound = Lildrak.ASSETS.get(Asset.Sound.PICKUP.getFileName());
 
+
         entity.add(new TransformComponent(x, y, Constants.COLLECTIBLE_Z, 0))
-                .add(new TextureComponent(region))
                 .add(new BodyComponent(body))
                 .add(new VerticalLimitComponent(Constants.VIEWPORT_HEIGHT + 1f))
                 .add(new HealthComponent(1))
                 .add(new ScoreComponent(value))
                 .add(new HurtSoundComponent(hurtSound))
-                .add(new NameComponent(asset));
+                .add(new TextureComponent(region))
+                .add(new NameComponent(collectibleType.getName()));
         GameScreen.engine.addEntity(entity);
         return entity;
     }
@@ -80,7 +85,7 @@ public class EntityFactory {
     public Entity createWindow(float x, float y, float originalX, float originalY, float ySpeed) {
         Entity entity = new Entity();
 
-        com.badlogic.gdx.graphics.Texture texture = Lildrak.ASSETS.get(Asset.Image.WINDOW.getFileName());
+        Texture texture = Lildrak.ASSETS.get(Asset.Image.WINDOW.getFileName());
         TextureRegion region = new TextureRegion(texture);
         float width = texture.getWidth() * Constants.METER_TO_PIXEL;
         float height = texture.getHeight() * Constants.METER_TO_PIXEL;
@@ -113,7 +118,7 @@ public class EntityFactory {
     public Entity createSkull(float x, float y, float xSpeed) {
         Entity entity = new Entity();
 
-        com.badlogic.gdx.graphics.Texture texture = Lildrak.ASSETS.get(Asset.Image.SKULL.getFileName());
+        Texture texture = Lildrak.ASSETS.get(Asset.Image.SKULL.getFileName());
         TextureRegion region = new TextureRegion(texture);
         Color color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
         float width = texture.getWidth() * Constants.METER_TO_PIXEL;
@@ -148,12 +153,12 @@ public class EntityFactory {
     public Entity createBat(float x, float y) {
         Entity entity = new Entity();
 
-        Array<com.badlogic.gdx.graphics.Texture> frames = new Array<com.badlogic.gdx.graphics.Texture>();
-        frames.add((com.badlogic.gdx.graphics.Texture) Lildrak.ASSETS.get(Asset.Image.BAT1.getFileName()));
-        frames.add((com.badlogic.gdx.graphics.Texture) Lildrak.ASSETS.get(Asset.Image.BAT2.getFileName()));
-        frames.add((com.badlogic.gdx.graphics.Texture) Lildrak.ASSETS.get(Asset.Image.BAT3.getFileName()));
-        frames.add((com.badlogic.gdx.graphics.Texture) Lildrak.ASSETS.get(Asset.Image.BAT4.getFileName()));
-        com.badlogic.gdx.graphics.Texture texture = frames.get(0);
+        Array<Texture> frames = new Array<Texture>();
+        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT1.getFileName()));
+        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT2.getFileName()));
+        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT3.getFileName()));
+        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT4.getFileName()));
+        Texture texture = frames.get(0);
         TextureRegion region = new TextureRegion(texture);
 
         float width = texture.getWidth() * Constants.METER_TO_PIXEL;

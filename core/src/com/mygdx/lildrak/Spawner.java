@@ -5,12 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.lildrak.entity.EntityFactory;
 import com.mygdx.lildrak.component.BodyComponent;
+import com.mygdx.lildrak.entity.EntityFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Spawner {
     EntityFactory entityFactory;
@@ -184,12 +185,22 @@ public class Spawner {
 
     private void spawnRandomCollectible(float x) {
         float offset = Lildrak.random.nextInt(3) / 10.0f - 0.1f;
-        // Randomly spawn money, lollipop or candy with 1-3-6 average ratio
-        // Money doesn't spawn on the easiest difficulty
-        int i = Lildrak.random.nextInt(10);
-        if (i == 0 && currentLevel > 1) entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
-        else if (i == 1 || i == 2 || i == 3) entityFactory.createMediumBonus(x, colY + offset, currentScrollSpeed);
-        else entityFactory.createSmallBonus(x, colY + offset, currentScrollSpeed);
+        Random random = new Random();
+        int randomInt = random.nextInt(100);
+        if (randomInt < 10 && currentLevel > 1) {
+            if (randomInt < 3) {
+                entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
+            }
+            else {
+                entityFactory.createSmallLoss(x, colY + offset, currentScrollSpeed);
+            }
+        }
+        else if (randomInt < 20) {
+            entityFactory.createMediumBonus(x, colY + offset, currentScrollSpeed);
+        }
+        else if (randomInt < 40) {
+            entityFactory.createSmallBonus(x, colY + offset, currentScrollSpeed);
+        }
     }
 
     private void spawnSkullMaybe() {

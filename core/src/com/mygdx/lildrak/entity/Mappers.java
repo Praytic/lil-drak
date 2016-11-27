@@ -6,6 +6,7 @@ import com.mygdx.lildrak.component.*;
 public class Mappers
 {
     public static final ComponentMapper<BatAnimationComponent> batAnimation = ComponentMapper.getFor(BatAnimationComponent.class);
+    public static final ComponentMapper<FireAnimationComponent> fireAnimation = ComponentMapper.getFor(FireAnimationComponent.class);
     public static final ComponentMapper<BodyComponent> bodyComponent = ComponentMapper.getFor(BodyComponent.class);
     public static final ComponentMapper<ColorComponent> colorComponent = ComponentMapper.getFor(ColorComponent.class);
     public static final ComponentMapper<DamageComponent> damage = ComponentMapper.getFor(DamageComponent.class);

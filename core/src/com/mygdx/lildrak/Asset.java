@@ -19,7 +19,9 @@ public interface Asset {
         WINDOW("window.png"),
         LOLLIPOP("lollipop.png"),
         CANDY("candy.png"),
-        MONEY("money.png");
+        MONEY("money.png"),
+        FLAME1("flame1.gif"),
+        FLAME2("flame2.gif");
 
         private String fileName;
 
