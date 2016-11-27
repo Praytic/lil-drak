@@ -2,9 +2,7 @@ package com.mygdx.lildrak;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,13 +20,14 @@ public class GameScreen extends ScreenAdapter {
 
     public static int score;
     public static int playerHealth;
-    EntityFactory entityFactory;
+    @Autowired
+    private EntityFactory entityFactory;
     Box2DDebugRenderer debugRenderer;
     OrthographicCamera camera;
     @Autowired
     private Hud hud;
     @Autowired
-    private Game game;
+    private CustomGame game;
     @Autowired
     private World world;
     Entity player;
@@ -53,7 +52,6 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
         debugRenderer = new Box2DDebugRenderer();
-        entityFactory = new EntityFactory();
         room = new Room(world);
 
         spawner.init();
@@ -79,7 +77,7 @@ public class GameScreen extends ScreenAdapter {
 
         spawner.run(deltaTime);
 
-        if (playerHealth <= 0 && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (playerHealth <= 0) {
             endGame();
         }
     }
@@ -93,15 +91,18 @@ public class GameScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                game.setRestarting(false);
                 game.setScreen(startScreen);
             }
         }, 0.5f);
     }
 
+    @Override
     public void show() {
         initialize();
     }
 
+    @Override
     public void hide() {
         engine.removeAllEntities();
     }

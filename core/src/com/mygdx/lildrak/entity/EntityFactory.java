@@ -28,29 +28,8 @@ public class EntityFactory {
     private Engine engine;
 
     public Entity createWhip(float x, float y, float ySpeed) {
-        Texture texture = assetManager.get(Asset.Image.WHIP.getFileName());
-        TextureRegion region = new TextureRegion(texture);
-
-        PolygonShape rectangle = new PolygonShape();
-        rectangle.setAsBox((float) region.getRegionWidth() * Constants.METER_TO_PIXEL / 2,
-                (float) region.getRegionHeight() * Constants.METER_TO_PIXEL / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = rectangle;
-        fixtureDef.density = 10f;
-        fixtureDef.friction = 0f;
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(x, y);
-        bodyDef.fixedRotation = true;
-        Body body = world.createBody(bodyDef);
-        body.createFixture(fixtureDef).setUserData(this);
-        body.setLinearVelocity(0, ySpeed);
-
-        rectangle.dispose();
-
-        return new Whip(x, y, WHIP_Z, 0, region, Constants.VIEWPORT_HEIGHT + 1f, 1, body);
+        return new Whip(x, y, WHIP_Z, 0, Constants.VIEWPORT_HEIGHT + 1f, 1, ySpeed,
+                assetManager.get(Asset.Image.WHIP.getFileName()), (bodyDef) -> world.createBody(bodyDef));
     }
 
     public Entity createSmallBonus(float x, float y, float ySpeed) {
@@ -72,8 +51,6 @@ public class EntityFactory {
     public Entity createCollectible(float x, float y, float ySpeed, int value, CollectibleType collectibleType) {
         Entity entity = new Entity();
 
-        float width = collectibleType.getWidth() * Constants.METER_TO_PIXEL;
-        float height = collectibleType.getHeight() * Constants.METER_TO_PIXEL;
         if (collectibleType == CollectibleType.FLAME) {
             entity.add(new FlameAnimationComponent(assetManager.get(collectibleType.getTextureNames().get(0).getFileName()),
                                                    assetManager.get(collectibleType.getTextureNames().get(1).getFileName())))
@@ -81,6 +58,8 @@ public class EntityFactory {
         }
         Texture texture = assetManager.get(collectibleType.getTextureNames().get(0).getFileName());
         TextureRegion region = new TextureRegion(texture);
+        float width = texture.getWidth() * Constants.METER_TO_PIXEL;
+        float height = texture.getHeight() * Constants.METER_TO_PIXEL;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;

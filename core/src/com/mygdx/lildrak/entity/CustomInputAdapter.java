@@ -3,6 +3,8 @@ package com.mygdx.lildrak.entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.utils.Timer;
+import com.mygdx.lildrak.CustomGame;
+import com.mygdx.lildrak.StartScreenAdapter;
 import com.mygdx.lildrak.entity.systems.InputSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,10 @@ public class CustomInputAdapter extends InputAdapter {
 
     @Autowired
     private InputSystem inputSystem;
+    @Autowired
+    private CustomGame game;
+    @Autowired
+    private StartScreenAdapter startScreenAdapter;
 
     private boolean acceptInput = true;
 
@@ -34,7 +40,8 @@ public class CustomInputAdapter extends InputAdapter {
                 inputSystem.moveUp();
                 break;
             case Input.Keys.SPACE:
-                inputSystem.moveUp();
+                game.setRestarting(true);
+                game.setScreen(startScreenAdapter);
                 break;
             case Input.Keys.D:
                 inputSystem.moveRight();

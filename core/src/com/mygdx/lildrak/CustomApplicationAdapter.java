@@ -2,10 +2,7 @@ package com.mygdx.lildrak;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -15,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Logger;
 import com.mygdx.lildrak.component.BodyComponent;
 import com.mygdx.lildrak.entity.BodyEntityListener;
 import com.mygdx.lildrak.entity.systems.InputSystem;
@@ -48,6 +46,7 @@ public class CustomApplicationAdapter extends ApplicationAdapter {
         customGame.create();
         spriteBatch = new SpriteBatch();
         Gdx.input.setInputProcessor(inputAdapter);
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         Map<String, Class> assetsToLoad = new HashMap<>();
         for (Asset assetType : Asset.Image.values()) {
@@ -58,6 +57,7 @@ public class CustomApplicationAdapter extends ApplicationAdapter {
         assetsToLoad.put(Asset.Sound.MUSIC_GAME.getFileName(), Music.class);
         assetsToLoad.put(Asset.Font.DEFAULT.getFileName(), BitmapFont.class);
         assetsToLoad.entrySet().forEach(entry -> assetManager.load(entry.getKey(), entry.getValue()));
+        assetManager.finishLoading();
     }
 
     @Override
@@ -78,7 +78,9 @@ public class CustomApplicationAdapter extends ApplicationAdapter {
 
     @Bean
     public AssetManager assetManager() {
-        return new AssetManager();
+        AssetManager assetManager = new AssetManager();
+        assetManager.setLogger(new Logger(LoggerTag.ASSET_MANAGER.toString(), Application.LOG_DEBUG));
+        return assetManager;
     }
 
     @Bean

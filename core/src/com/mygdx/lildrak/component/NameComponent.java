@@ -2,14 +2,12 @@ package com.mygdx.lildrak.component;
 
 import com.badlogic.ashley.core.Component;
 
-import java.util.UUID;
-
 public class NameComponent implements Component {
 
     private String name;
 
     public NameComponent(String name) {
-        this.name = name + "-" + UUID.randomUUID().toString();
+        this.name = name + "-" + this.hashCode();
     }
 
     public String getName() {

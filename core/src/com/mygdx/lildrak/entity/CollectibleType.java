@@ -14,8 +14,6 @@ public enum CollectibleType {
 
     private List<Asset.Image> textureNames;
     private String name;
-    private int width;
-    private int height;
 
     CollectibleType(String name, Asset.Image... textureNames) {
         this.textureNames = new ArrayList<>();
@@ -29,23 +27,7 @@ public enum CollectibleType {
         return name;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     public List<Asset.Image> getTextureNames() {
         return textureNames;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 }
