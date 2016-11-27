@@ -3,15 +3,18 @@ package com.mygdx.lildrak.entity;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.lildrak.GameScreen;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.lildrak.LoggerTag;
 import com.mygdx.lildrak.component.BodyComponent;
 import com.mygdx.lildrak.component.NameComponent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- * Destroy bodies, when their entities are removed from the engine
- */
+@Component
 public class BodyEntityListener implements EntityListener {
+
+    @Autowired
+    private World world;
 
     @Override
     public void entityAdded(Entity entity) {
@@ -23,7 +26,7 @@ public class BodyEntityListener implements EntityListener {
         Gdx.app.debug(LoggerTag.DELETE_ENTITY.toString(), entity.getComponent(NameComponent.class).getName());
         BodyComponent component = entity.getComponent(BodyComponent.class);
         if (component != null) {
-            GameScreen.world.destroyBody(component.getBody());
+            world.destroyBody(component.getBody());
         }
     }
 }

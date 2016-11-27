@@ -1,6 +1,7 @@
 package com.mygdx.lildrak;
 
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -13,13 +14,17 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+
+import static com.badlogic.gdx.math.MathUtils.random;
 
 @Component
 public class Spawner {
 
     @Autowired
     private EntityFactory entityFactory;
+    @Autowired
+    private Engine engine;
+
     Preferences prefs;
     int difficultySetting; // from preferences
     int currentLevel = 0;
@@ -35,7 +40,6 @@ public class Spawner {
     private float lollipopSpawnRate;
     private float moneySpawnRate;
     private float flameSpawnRate;
-    private float platformSpawnRate;
 
     List<Float> gauntlet1a = new ArrayList<Float>(Arrays.asList(2.2f, 3.5f));
     List<Float> gauntlet1b = new ArrayList<Float>(Arrays.asList(0.6f, 1.8f));
@@ -85,7 +89,6 @@ public class Spawner {
         currentSpawnRate = Constants.SPAWN_RATE - Constants.SPAWN_RATE_DIFFICULTY_INCREASE * difficultySetting;
         currentScrollSpeed = Constants.SCROLL_SPEED;
         whipTimer = currentSpawnRate;
-        platformSpawnRate = currentSpawnRate;
         collectibleTimer = getCollectibleSpawnRate();
         spawnTimer = Constants.LEVEL_TIME;
         levelChangeTimer = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
@@ -158,17 +161,17 @@ public class Spawner {
     private void spawnCollectibles(float deltaTime) {
         if (collectibleTimer > 0) collectibleTimer -= deltaTime;
         else {
-            spawnRandomCollectible(Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f);
+            spawnRandomCollectible(random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f);
             collectibleTimer = Constants.COLLECTIBLE_SPAWN_RATE;
         }
     }
 
     private void spawnRandomGauntlet() {
-        currentGauntlet = gauntletList.get(Lildrak.random.nextInt(gauntletList.size()));
+        currentGauntlet = gauntletList.get(random.nextInt(gauntletList.size()));
         // Catch streaks greater than 2 and reroll
         if (currentGauntlet.equals(lastGauntlet)) streakCounter++;
         if (streakCounter >= maxStreak) {
-            currentGauntlet = gauntletList.get(Lildrak.random.nextInt(gauntletList.size()));
+            currentGauntlet = gauntletList.get(random.nextInt(gauntletList.size()));
             streakCounter = 0;
         }
 
@@ -178,13 +181,12 @@ public class Spawner {
 
     private void spawnGauntlet(List<Float> gauntlet) {
         for (Float e : gauntlet) {
-            GameScreen.engine.addEntity(entityFactory.createWhip(e, -1f, currentScrollSpeed));
+            engine.addEntity(entityFactory.createWhip(e, -1f, currentScrollSpeed));
         }
     }
 
     private void spawnRandomCollectible(float x) {
-        float offset = Lildrak.random.nextInt(3) / 10.0f - 0.1f;
-        Random random = new Random();
+        float offset = random.nextInt(3) / 10.0f - 0.1f;
         float sum = Constants.COLLECTIBLE_CANDY_SPAWN_RATE + Constants.COLLECTIBLE_FLAME_SPAWN_RATE +
                 Constants.COLLECTIBLE_LOLLIPOP_SPAWN_RATE + Constants.COLLECTIBLE_MONEY_SPAWN_RATE;
         candySpawnRate = Constants.COLLECTIBLE_CANDY_SPAWN_RATE * (100 / sum);
@@ -207,7 +209,7 @@ public class Spawner {
     }
 
     private void spawnSkullMaybe() {
-        int rand = Lildrak.random.nextInt(2);
+        int rand = random.nextInt(2);
         if (rand >= 1) entityFactory.createSkull(5f, 0.5f, -currentScrollSpeed);
     }
 
@@ -227,7 +229,4 @@ public class Spawner {
         return flameSpawnRate;
     }
 
-    public float getPlatformSpawnRate() {
-        return platformSpawnRate;
-    }
 }

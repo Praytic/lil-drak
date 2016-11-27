@@ -7,13 +7,18 @@ import com.badlogic.ashley.systems.IntervalSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.mygdx.lildrak.component.*;
 import com.mygdx.lildrak.entity.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FlameAnimationSystem extends IntervalSystem {
 
     private ImmutableArray<Entity> entities;
 
-    public FlameAnimationSystem() {
+    @Autowired
+    public FlameAnimationSystem(Engine engine) {
         super(0.1f);
+        engine.addSystem(this);
     }
 
     @Override

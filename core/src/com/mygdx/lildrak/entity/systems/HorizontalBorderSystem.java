@@ -1,28 +1,31 @@
 package com.mygdx.lildrak.entity.systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.mygdx.lildrak.GameScreen;
-import com.mygdx.lildrak.entity.Mappers;
 import com.mygdx.lildrak.component.BodyComponent;
 import com.mygdx.lildrak.component.HorizontalLimitComponent;
+import com.mygdx.lildrak.entity.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class HorizontalBorderSystem extends IteratingSystem
-{
-    public HorizontalBorderSystem()
-    {
+@Component
+public class HorizontalBorderSystem extends IteratingSystem {
+
+    private final Engine engine;
+
+    @Autowired
+    public HorizontalBorderSystem(Engine engine) {
         super(Family.all(HorizontalLimitComponent.class, BodyComponent.class).get());
+        engine.addSystem(this);
+        this.engine = engine;
     }
 
-    public void processEntity(Entity entity, float deltaTime)
-    {
-        HorizontalLimitComponent lc = Mappers.horizontalLimit.get(entity);
-        BodyComponent bc = Mappers.bodyComponent.get(entity);
-
-        if (bc.getBody().getPosition().x < lc.limit)
-        {
-            GameScreen.engine.removeEntity(entity);
+    @Override
+    public void processEntity(Entity entity, float deltaTime) {
+        if (Mappers.bodyComponent.get(entity).getBody().getPosition().x < Mappers.horizontalLimit.get(entity).limit) {
+            engine.removeEntity(entity);
         }
     }
 }

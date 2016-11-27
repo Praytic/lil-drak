@@ -1,6 +1,8 @@
 package com.mygdx.lildrak.entity;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,9 +11,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.lildrak.Asset;
 import com.mygdx.lildrak.Constants;
-import com.mygdx.lildrak.GameScreen;
-import com.mygdx.lildrak.Lildrak;
 import com.mygdx.lildrak.component.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.mygdx.lildrak.Constants.WHIP_Z;
@@ -19,10 +20,37 @@ import static com.mygdx.lildrak.Constants.WHIP_Z;
 @Component
 public class EntityFactory {
 
+    @Autowired
+    private AssetManager assetManager;
+    @Autowired
+    private World world;
+    @Autowired
+    private Engine engine;
+
     public Entity createWhip(float x, float y, float ySpeed) {
-        Texture texture = Lildrak.ASSETS.get(Asset.Image.WHIP.getFileName());
+        Texture texture = assetManager.get(Asset.Image.WHIP.getFileName());
         TextureRegion region = new TextureRegion(texture);
-        return new Whip(x, y, WHIP_Z, 0, region, Constants.VIEWPORT_HEIGHT + 1f, 1, ySpeed);
+
+        PolygonShape rectangle = new PolygonShape();
+        rectangle.setAsBox((float) region.getRegionWidth() * Constants.METER_TO_PIXEL / 2,
+                (float) region.getRegionHeight() * Constants.METER_TO_PIXEL / 2);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = rectangle;
+        fixtureDef.density = 10f;
+        fixtureDef.friction = 0f;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(x, y);
+        bodyDef.fixedRotation = true;
+        Body body = world.createBody(bodyDef);
+        body.createFixture(fixtureDef).setUserData(this);
+        body.setLinearVelocity(0, ySpeed);
+
+        rectangle.dispose();
+
+        return new Whip(x, y, WHIP_Z, 0, region, Constants.VIEWPORT_HEIGHT + 1f, 1, body);
     }
 
     public Entity createSmallBonus(float x, float y, float ySpeed) {
@@ -47,11 +75,11 @@ public class EntityFactory {
         float width = collectibleType.getWidth() * Constants.METER_TO_PIXEL;
         float height = collectibleType.getHeight() * Constants.METER_TO_PIXEL;
         if (collectibleType == CollectibleType.FLAME) {
-            entity.add(new FlameAnimationComponent(
-                    collectibleType.getTextures().get(0), collectibleType.getTextures().get(1)))
+            entity.add(new FlameAnimationComponent(assetManager.get(collectibleType.getTextureNames().get(0)),
+                                                   assetManager.get(collectibleType.getTextureNames().get(1))))
                     .add(new DamageComponent(1));
         }
-        Texture texture = collectibleType.getTextures().get(0);
+        Texture texture = assetManager.get(collectibleType.getTextureNames().get(0));
         TextureRegion region = new TextureRegion(texture);
 
         BodyDef bodyDef = new BodyDef();
@@ -64,13 +92,13 @@ public class EntityFactory {
         fixtureDef.shape = rectangle;
         fixtureDef.density = 10f;
         fixtureDef.friction = 0f;
-        com.badlogic.gdx.physics.box2d.Body body = GameScreen.world.createBody(bodyDef);
+        com.badlogic.gdx.physics.box2d.Body body = world.createBody(bodyDef);
         Fixture fixture = body.createFixture(fixtureDef);
         body.setLinearVelocity(0, ySpeed);
         fixture.setUserData(entity);
         rectangle.dispose();
 
-        Sound hurtSound = Lildrak.ASSETS.get(Asset.Sound.PICKUP.getFileName());
+        Sound hurtSound = assetManager.get(Asset.Sound.PICKUP.getFileName());
 
 
         entity.add(new TransformComponent(x, y, Constants.COLLECTIBLE_Z, 0))
@@ -81,14 +109,14 @@ public class EntityFactory {
                 .add(new HurtSoundComponent(hurtSound))
                 .add(new TextureComponent(region))
                 .add(new NameComponent(collectibleType.getName()));
-        GameScreen.engine.addEntity(entity);
+        engine.addEntity(entity);
         return entity;
     }
 
     public Entity createWindow(float x, float y, float originalX, float originalY, float ySpeed) {
         Entity entity = new Entity();
 
-        Texture texture = Lildrak.ASSETS.get(Asset.Image.WINDOW.getFileName());
+        Texture texture = assetManager.get(Asset.Image.WINDOW.getFileName());
         TextureRegion region = new TextureRegion(texture);
         float width = texture.getWidth() * Constants.METER_TO_PIXEL;
         float height = texture.getHeight() * Constants.METER_TO_PIXEL;
@@ -103,7 +131,7 @@ public class EntityFactory {
         fixtureDef.density = 10f;
         fixtureDef.friction = 0f;
         fixtureDef.filter.groupIndex = -2;
-        com.badlogic.gdx.physics.box2d.Body body = GameScreen.world.createBody(bodyDef);
+        com.badlogic.gdx.physics.box2d.Body body = world.createBody(bodyDef);
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(entity);
         body.setLinearVelocity(0, ySpeed);
@@ -114,14 +142,14 @@ public class EntityFactory {
                 .add(new TextureComponent(region))
                 .add(new BodyComponent(body))
                 .add(new NameComponent("window"));
-        GameScreen.engine.addEntity(entity);
+        engine.addEntity(entity);
         return entity;
     }
 
     public Entity createSkull(float x, float y, float xSpeed) {
         Entity entity = new Entity();
 
-        Texture texture = Lildrak.ASSETS.get(Asset.Image.SKULL.getFileName());
+        Texture texture = assetManager.get(Asset.Image.SKULL.getFileName());
         TextureRegion region = new TextureRegion(texture);
         Color color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
         float width = texture.getWidth() * Constants.METER_TO_PIXEL;
@@ -134,7 +162,7 @@ public class EntityFactory {
         fixtureDef.shape = circle;
         fixtureDef.density = 20f;
         fixtureDef.friction = 0f;
-        com.badlogic.gdx.physics.box2d.Body body = GameScreen.world.createBody(bodyDef);
+        com.badlogic.gdx.physics.box2d.Body body = world.createBody(bodyDef);
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(entity);
 
@@ -149,7 +177,7 @@ public class EntityFactory {
                 .add(new DamageComponent(1))
                 .add(new HorizontalLimitComponent(-1f))
                 .add(new NameComponent("skull"));
-        GameScreen.engine.addEntity(entity);
+        engine.addEntity(entity);
         return entity;
     }
 
@@ -157,10 +185,10 @@ public class EntityFactory {
         Entity entity = new Entity();
 
         Array<Texture> frames = new Array<Texture>();
-        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT1.getFileName()));
-        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT2.getFileName()));
-        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT3.getFileName()));
-        frames.add(Lildrak.ASSETS.get(Asset.Image.BAT4.getFileName()));
+        frames.add(assetManager.get(Asset.Image.BAT1.getFileName()));
+        frames.add(assetManager.get(Asset.Image.BAT2.getFileName()));
+        frames.add(assetManager.get(Asset.Image.BAT3.getFileName()));
+        frames.add(assetManager.get(Asset.Image.BAT4.getFileName()));
         Texture texture = frames.get(0);
         TextureRegion region = new TextureRegion(texture);
 
@@ -177,12 +205,12 @@ public class EntityFactory {
         fixtureDef.density = 10f;
         fixtureDef.friction = 0f;
         fixtureDef.filter.groupIndex = Constants.BACKGROUND_INDEX;
-        com.badlogic.gdx.physics.box2d.Body body = GameScreen.world.createBody(bodyDef);
+        com.badlogic.gdx.physics.box2d.Body body = world.createBody(bodyDef);
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(entity);
         body.setLinearDamping(1f);
         circle.dispose();
-        Sound hurtSound = Lildrak.ASSETS.get(Asset.Sound.HURT.getFileName());
+        Sound hurtSound = assetManager.get(Asset.Sound.HURT.getFileName());
 
         entity.add(new TransformComponent(x, y, Constants.BAT_Z, 0))
                 .add(new TextureComponent(region))
@@ -196,7 +224,7 @@ public class EntityFactory {
                 .add(new VerticalLimitComponent(Constants.VIEWPORT_HEIGHT + 0.1f))
                 .add(new InvincibilityComponent(1f))
                 .add(new NameComponent("bat"));
-        GameScreen.engine.addEntity(entity);
+        engine.addEntity(entity);
         return entity;
     }
 }

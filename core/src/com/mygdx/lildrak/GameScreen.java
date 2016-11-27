@@ -2,37 +2,35 @@ package com.mygdx.lildrak;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
-import com.mygdx.lildrak.component.BodyComponent;
-import com.mygdx.lildrak.entity.BodyEntityListener;
 import com.mygdx.lildrak.entity.EntityFactory;
-import com.mygdx.lildrak.entity.MyInputAdapter;
-import com.mygdx.lildrak.entity.systems.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static com.mygdx.lildrak.CustomApplicationAdapter.spriteBatch;
 
 @Component
 public class GameScreen extends ScreenAdapter {
 
-    public static Engine engine;
-    public static World world;
     public static int score;
     public static int playerHealth;
     EntityFactory entityFactory;
     Box2DDebugRenderer debugRenderer;
     OrthographicCamera camera;
-    MyInputAdapter inputAdapter;
     @Autowired
     private Hud hud;
+    @Autowired
+    private Game game;
+    @Autowired
+    private World world;
     Entity player;
     Room room;
     @Autowired
@@ -40,7 +38,7 @@ public class GameScreen extends ScreenAdapter {
     @Autowired
     private StartScreenAdapter startScreen;
     @Autowired
-    private Lildrak lildrak;
+    private Engine engine;
     private boolean isCreated = false;
 
     public void initialize() {
@@ -55,30 +53,8 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
         debugRenderer = new Box2DDebugRenderer();
-        world = Lildrak.world;
-        world.setGravity(new Vector2(0f, Constants.WORLD_GRAVITY));
         entityFactory = new EntityFactory();
         room = new Room(world);
-
-        engine = Lildrak.engine;
-        engine.addSystem(new PhysicsSystem(0)); // transform must be updated before rendering
-        engine.addSystem(new RenderSystem(1));
-        engine.addSystem(new ResetSystem());
-        engine.addSystem(new BatAnimationSystem());
-        engine.addSystem(new FlameAnimationSystem());
-        engine.addSystem(new VerticalBorderSystem());
-        engine.addSystem(new HorizontalBorderSystem());
-        engine.addSystem(new HealthSystem());
-        engine.addSystem(new CollisionSystem());
-        engine.addSystem(new InvincibilitySystem());
-
-        InputSystem inputSystem = new InputSystem();
-        this.inputAdapter = new MyInputAdapter(inputSystem);
-        engine.addSystem(inputSystem);
-        Gdx.input.setInputProcessor(inputAdapter);
-
-        BodyEntityListener bodyRemoval = new BodyEntityListener();
-        engine.addEntityListener(Family.all(BodyComponent.class).get(), bodyRemoval);
 
         spawner.init();
         player = entityFactory.createBat(2f, 1f);
@@ -95,9 +71,9 @@ public class GameScreen extends ScreenAdapter {
 
         world.step(Constants.TIME_STEP, Constants.VELOCITY_ITERATIONS, Constants.POSITION_ITERATIONS);
 
-        Lildrak.spriteBatch.begin();
+        spriteBatch.begin();
         engine.update(deltaTime);
-        Lildrak.spriteBatch.end();
+        spriteBatch.end();
 
         hud.draw();
 
@@ -117,7 +93,7 @@ public class GameScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                lildrak.game.setScreen(startScreen);
+                game.setScreen(startScreen);
             }
         }, 0.5f);
     }

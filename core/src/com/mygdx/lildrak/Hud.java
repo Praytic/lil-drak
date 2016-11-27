@@ -1,10 +1,13 @@
 package com.mygdx.lildrak;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static com.mygdx.lildrak.CustomApplicationAdapter.spriteBatch;
 
 @Component
 public class Hud {
@@ -24,15 +27,17 @@ public class Hud {
     private Spawner spawner;
     @Autowired
     private StartScreenAdapter startScreenAdapter;
+    @Autowired
+    private AssetManager assetManager;
 
     public Hud() {
         System.out.println();
     }
 
     public void draw() {
-        BitmapFont font = Lildrak.ASSETS.get(Asset.Font.DEFAULT.getFileName());
+        BitmapFont font = assetManager.get(Asset.Font.DEFAULT.getFileName());
         font.getData().setScale(0.5f, 0.5f);
-        Texture heartTexture = Lildrak.ASSETS.get(Asset.Image.HEART.getFileName());
+        Texture heartTexture = assetManager.get(Asset.Image.HEART.getFileName());
         GlyphLayout layout = new GlyphLayout();
 
         realScore = GameScreen.score;
@@ -47,22 +52,22 @@ public class Hud {
             yOffset = (float) (realScore - currentScore) / realScore * juiceJump;
         }
 
-        Lildrak.spriteBatch.begin();
+        spriteBatch.begin();
 
-        font.draw(Lildrak.spriteBatch, String.format("current_score: %d", currentScore), 1200 - width, 900 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("highest_score: %d", startScreenAdapter.getHighScore()), 1200 - width, 875 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("level: %d", spawner.currentLevel), 1200 - width, 850 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("speed: %.2f", spawner.currentScrollSpeed), 1200 - width, 825 + yOffset);
-        font.draw(Lildrak.spriteBatch, "------ rate ------", 1200 - width, 775 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("candy_spawn: %.2f", 1 / (spawner.getCandySpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 750 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("lollipop_spawn: %.2f", 1 / (spawner.getLollipopSpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 725 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("money_spawn: %.2f", 1 / (spawner.getMoneySpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 700 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("flame_spawn: %.2f", 1 / (spawner.getFlameSpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 675 + yOffset);
-        font.draw(Lildrak.spriteBatch, String.format("platform_spawn: %.2f", spawner.currentSpawnRate), 1200 - width, 650 + yOffset);
+        font.draw(spriteBatch, String.format("current_score: %d", currentScore), 1200 - width, 900 + yOffset);
+        font.draw(spriteBatch, String.format("highest_score: %d", startScreenAdapter.getHighScore()), 1200 - width, 875 + yOffset);
+        font.draw(spriteBatch, String.format("level: %d", spawner.currentLevel), 1200 - width, 850 + yOffset);
+        font.draw(spriteBatch, String.format("speed: %.2f", spawner.currentScrollSpeed), 1200 - width, 825 + yOffset);
+        font.draw(spriteBatch, "------ rate ------", 1200 - width, 775 + yOffset);
+        font.draw(spriteBatch, String.format("candy_spawn: %.2f", 1 / (spawner.getCandySpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 750 + yOffset);
+        font.draw(spriteBatch, String.format("lollipop_spawn: %.2f", 1 / (spawner.getLollipopSpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 725 + yOffset);
+        font.draw(spriteBatch, String.format("money_spawn: %.2f", 1 / (spawner.getMoneySpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 700 + yOffset);
+        font.draw(spriteBatch, String.format("flame_spawn: %.2f", 1 / (spawner.getFlameSpawnRate() / 100f) * spawner.currentSpawnRate), 1200 - width, 675 + yOffset);
+        font.draw(spriteBatch, String.format("platform_spawn: %.2f", spawner.currentSpawnRate), 1200 - width, 650 + yOffset);
         for (int i = 0; i < lives; i++) {
-            Lildrak.spriteBatch.draw(heartTexture, 10 + i * 70, 870);
+            spriteBatch.draw(heartTexture, 10 + i * 70, 870);
         }
-        Lildrak.spriteBatch.end();
+        spriteBatch.end();
     }
 
     private void updateScore() {
