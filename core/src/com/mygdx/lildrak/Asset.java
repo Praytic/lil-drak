@@ -4,24 +4,24 @@ public interface Asset {
 
     enum Image implements Asset {
 
-        BACKGROUND("splash.png"),
-        INTRO("intro.png"),
-        FADE("fade.png"),
-        FADE_BLACK("fadeblack.png"),
-        BLACK("black.png"),
-        HEART("heart.png"),
-        BAT1("bat1.png"),
-        BAT2("bat2.png"),
-        BAT3("bat3.png"),
-        BAT4("bat4.png"),
-        SKULL("skelly.png"),
-        WHIP("whip.png"),
-        WINDOW("window.png"),
-        LOLLIPOP("lollipop.png"),
-        CANDY("candy.png"),
-        MONEY("money.png"),
-        FLAME1("flame1.gif"),
-        FLAME2("flame2.gif");
+        BACKGROUND("data/splash.png"),
+        INTRO("data/intro.png"),
+        FADE("data/fade.png"),
+        FADE_BLACK("data/fadeblack.png"),
+        BLACK("data/black.png"),
+        HEART("data/heart.png"),
+        BAT1("data/bat1.png"),
+        BAT2("data/bat2.png"),
+        BAT3("data/bat3.png"),
+        BAT4("data/bat4.png"),
+        SKULL("data/skelly.png"),
+        WHIP("data/whip.png"),
+        WINDOW("data/window.png"),
+        LOLLIPOP("data/lollipop.png"),
+        CANDY("data/candy.png"),
+        MONEY("data/money.png"),
+        FLAME1("data/flame1.gif"),
+        FLAME2("data/flame2.gif");
 
         private String fileName;
 
@@ -37,10 +37,10 @@ public interface Asset {
 
     enum Sound implements Asset {
 
-        MUSIC("music.ogg"),
-        MUSIC_GAME("music_game.ogg"),
-        PICKUP("pickup.ogg"),
-        HURT("hurt.ogg");
+        MUSIC("data/music.ogg"),
+        MUSIC_GAME("data/music_game.ogg"),
+        PICKUP("data/pickup.ogg"),
+        HURT("data/hurt.ogg");
 
         private String fileName;
 
@@ -56,7 +56,7 @@ public interface Asset {
 
     enum Font implements Asset {
 
-        DEFAULT("font.fnt");
+        DEFAULT("data/font.fnt");
 
         private String fileName;
 

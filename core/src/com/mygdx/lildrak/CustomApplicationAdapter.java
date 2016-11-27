@@ -49,7 +49,6 @@ public class CustomApplicationAdapter extends ApplicationAdapter {
         spriteBatch = new SpriteBatch();
         Gdx.input.setInputProcessor(inputAdapter);
 
-        Texture.setAssetManager(assetManager);
         Map<String, Class> assetsToLoad = new HashMap<>();
         for (Asset assetType : Asset.Image.values()) {
             assetsToLoad.put(assetType.getFileName(), Texture.class);

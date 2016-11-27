@@ -75,11 +75,11 @@ public class EntityFactory {
         float width = collectibleType.getWidth() * Constants.METER_TO_PIXEL;
         float height = collectibleType.getHeight() * Constants.METER_TO_PIXEL;
         if (collectibleType == CollectibleType.FLAME) {
-            entity.add(new FlameAnimationComponent(assetManager.get(collectibleType.getTextureNames().get(0)),
-                                                   assetManager.get(collectibleType.getTextureNames().get(1))))
+            entity.add(new FlameAnimationComponent(assetManager.get(collectibleType.getTextureNames().get(0).getFileName()),
+                                                   assetManager.get(collectibleType.getTextureNames().get(1).getFileName())))
                     .add(new DamageComponent(1));
         }
-        Texture texture = assetManager.get(collectibleType.getTextureNames().get(0));
+        Texture texture = assetManager.get(collectibleType.getTextureNames().get(0).getFileName());
         TextureRegion region = new TextureRegion(texture);
 
         BodyDef bodyDef = new BodyDef();

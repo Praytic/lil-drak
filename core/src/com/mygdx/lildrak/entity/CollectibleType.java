@@ -1,23 +1,25 @@
 package com.mygdx.lildrak.entity;
 
+import com.mygdx.lildrak.Asset;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public enum CollectibleType {
 
-    CANDY("candy", "candy.png"),
-    LOLLIPOP("lollipop", "lollipop.png"),
-    MONEY("money", "money.png"),
-    FLAME("flame", "flame1.gif", "flame2.gif");
+    CANDY("candy", Asset.Image.CANDY),
+    LOLLIPOP("lollipop", Asset.Image.LOLLIPOP),
+    MONEY("money", Asset.Image.MONEY),
+    FLAME("flame", Asset.Image.FLAME1, Asset.Image.FLAME2);
 
-    private List<String> textureNames;
+    private List<Asset.Image> textureNames;
     private String name;
     private int width;
     private int height;
 
-    CollectibleType(String name, String... textureNames) {
+    CollectibleType(String name, Asset.Image... textureNames) {
         this.textureNames = new ArrayList<>();
-        for (String textureName : textureNames) {
+        for (Asset.Image textureName : textureNames) {
             this.textureNames.add(textureName);
         }
         this.name = name;
@@ -35,7 +37,7 @@ public enum CollectibleType {
         return height;
     }
 
-    public List<String> getTextureNames() {
+    public List<Asset.Image> getTextureNames() {
         return textureNames;
     }
 
