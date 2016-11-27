@@ -39,19 +39,14 @@ public class StartScreenAdapter extends ScreenAdapter {
     public void render(float deltaTime) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
         Lildrak.spriteBatch.begin();
-
         Lildrak.spriteBatch.draw(background, 0, 0);
-        font.draw(Lildrak.spriteBatch, "Difficulty: " + difficulty, 1000, 900);
         updateFadeBoxColor();
         fadeBox.draw(Lildrak.spriteBatch);
-        if (!firstLaunch) drawScore(deltaTime);
-
         Lildrak.spriteBatch.end();
 
         getInput();
-    }
+     }
 
     private void updateFadeBoxColor() {
         currentColor = fadeBox.getColor();
@@ -60,33 +55,7 @@ public class StartScreenAdapter extends ScreenAdapter {
         fadeBox.setColor(currentColor.r, currentColor.g, currentColor.b, currentColor.a + fadeDirection * 0.009f);
     }
 
-    private void drawScore(float deltaTime) {
-        Lildrak.spriteBatch.draw(controlsHidingTexture, 300, 400); // hide controls
-        font.setColor(defaultColor);
-        font.draw(Lildrak.spriteBatch, "High Score: ", 450, 500);
-        if (lastScore == highScore) {
-            if (frameCounter >= 0.5f) {
-                randomColor = new Color(Lildrak.random.nextFloat(), Lildrak.random.nextFloat(), Lildrak.random.nextFloat(), 1f);
-                font.setColor(randomColor);
-            } else frameCounter += deltaTime;
-        } else font.draw(Lildrak.spriteBatch, ("Score: " + lastScore), 450, 600);
-
-        font.draw(Lildrak.spriteBatch, "" + highScore, 670, 500);
-    }
-
     private void getInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_0)) {
-            Gdx.app.getPreferences("My Preferences").putInteger("difficulty", 0);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            Gdx.app.getPreferences("My Preferences").putInteger("difficulty", 1);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            Gdx.app.getPreferences("My Preferences").putInteger("difficulty", 2);
-        }
-        difficulty = Gdx.app.getPreferences("My Preferences").getInteger("difficulty", 0);
-
-        // Skip screen by pressing space
          if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -98,7 +67,7 @@ public class StartScreenAdapter extends ScreenAdapter {
             lildrak.game.setScreen(gameScreen);
             font.setColor(defaultColor);
         }
-      }
+  }
 
     @Override
     public void show() {
@@ -115,7 +84,6 @@ public class StartScreenAdapter extends ScreenAdapter {
         defaultColor = new Color(1f, 1f, 1f, 1f);
 
         difficulty = Gdx.app.getPreferences("My Preferences").getInteger("difficulty", 0);
-
         highScore = Gdx.app.getPreferences("My Preferences").getInteger("score", 0);
         lastScore = Gdx.app.getPreferences("My Preferences").getInteger("lastScore", 0);
     }
@@ -126,5 +94,9 @@ public class StartScreenAdapter extends ScreenAdapter {
 
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public int getHighScore() {
+        return highScore;
     }
 }

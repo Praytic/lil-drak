@@ -31,10 +31,12 @@ public class GameScreen extends ScreenAdapter {
     Box2DDebugRenderer debugRenderer;
     OrthographicCamera camera;
     MyInputAdapter inputAdapter;
-    Hud hud;
+    @Autowired
+    private Hud hud;
     Entity player;
     Room room;
-    Spawner spawner;
+    @Autowired
+    private Spawner spawner;
     @Autowired
     private StartScreenAdapter startScreen;
     @Autowired
@@ -45,7 +47,6 @@ public class GameScreen extends ScreenAdapter {
         if (isCreated) {
             spawner.init();
             player = entityFactory.createBat(2f, 1f);
-            hud = new Hud();
             score = 0;
             playerHealth = Constants.PLAYER_HEALTH;
             return;
@@ -57,7 +58,6 @@ public class GameScreen extends ScreenAdapter {
         world = Lildrak.world;
         world.setGravity(new Vector2(0f, Constants.WORLD_GRAVITY));
         entityFactory = new EntityFactory();
-        spawner = new Spawner(entityFactory);
         room = new Room(world);
 
         engine = Lildrak.engine;
@@ -82,7 +82,6 @@ public class GameScreen extends ScreenAdapter {
 
         spawner.init();
         player = entityFactory.createBat(2f, 1f);
-        hud = new Hud();
         score = 0;
         playerHealth = Constants.PLAYER_HEALTH;
 

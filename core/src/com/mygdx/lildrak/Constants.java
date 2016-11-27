@@ -28,8 +28,8 @@ public class Constants {
     public static float SCROLL_SPEED_INCREASE = 0.05f; // scroll faster at higher levels
 
     public static float COLLECTIBLE_SPAWN_RATE = 0.5f;
-    public static float COLLECTIBLE_CHANCE_CANDY = 0.5f;
-    public static float COLLECTIBLE_CHANCE_LOLLIPOP = 0.3f;
-    public static float COLLECTIBLE_CHANCE_MONEY = 0.1f;
-    public static float COLLECTIBLE_CHANCE_FLAME = 0.1f;
+    public static float COLLECTIBLE_CANDY_SPAWN_RATE = 0.5f;
+    public static float COLLECTIBLE_LOLLIPOP_SPAWN_RATE = 0.3f;
+    public static float COLLECTIBLE_MONEY_SPAWN_RATE = 0.1f;
+    public static float COLLECTIBLE_FLAME_SPAWN_RATE = 0.1f;
 }

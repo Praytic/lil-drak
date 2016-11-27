@@ -12,9 +12,11 @@ import com.mygdx.lildrak.Constants;
 import com.mygdx.lildrak.GameScreen;
 import com.mygdx.lildrak.Lildrak;
 import com.mygdx.lildrak.component.*;
+import org.springframework.stereotype.Component;
 
 import static com.mygdx.lildrak.Constants.WHIP_Z;
 
+@Component
 public class EntityFactory {
 
     public Entity createWhip(float x, float y, float ySpeed) {

@@ -7,14 +7,19 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.lildrak.component.BodyComponent;
 import com.mygdx.lildrak.entity.EntityFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@Component
 public class Spawner {
-    EntityFactory entityFactory;
+
+    @Autowired
+    private EntityFactory entityFactory;
     Preferences prefs;
     int difficultySetting; // from preferences
     int currentLevel = 0;
@@ -26,6 +31,11 @@ public class Spawner {
     float collectibleTimer;
     float spawnTimer;
     float levelChangeTimer;
+    private float candySpawnRate;
+    private float lollipopSpawnRate;
+    private float moneySpawnRate;
+    private float flameSpawnRate;
+    private float platformSpawnRate;
 
     List<Float> gauntlet1a = new ArrayList<Float>(Arrays.asList(2.2f, 3.5f));
     List<Float> gauntlet1b = new ArrayList<Float>(Arrays.asList(0.6f, 1.8f));
@@ -69,16 +79,13 @@ public class Spawner {
 
     static STATE currentState;
 
-    public Spawner(EntityFactory entityFactory) {
-        this.entityFactory = entityFactory;
-        prefs = Gdx.app.getPreferences("My Preferences");
-    }
-
     public void init() {
+        prefs = Gdx.app.getPreferences("My Preferences");
         difficultySetting = prefs.getInteger("difficulty", 0);
         currentSpawnRate = Constants.SPAWN_RATE - Constants.SPAWN_RATE_DIFFICULTY_INCREASE * difficultySetting;
         currentScrollSpeed = Constants.SCROLL_SPEED;
         whipTimer = currentSpawnRate;
+        platformSpawnRate = currentSpawnRate;
         collectibleTimer = getCollectibleSpawnRate();
         spawnTimer = Constants.LEVEL_TIME;
         levelChangeTimer = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
@@ -178,23 +185,23 @@ public class Spawner {
     private void spawnRandomCollectible(float x) {
         float offset = Lildrak.random.nextInt(3) / 10.0f - 0.1f;
         Random random = new Random();
-        float sum = Constants.COLLECTIBLE_CHANCE_CANDY + Constants.COLLECTIBLE_CHANCE_FLAME +
-                Constants.COLLECTIBLE_CHANCE_LOLLIPOP + Constants.COLLECTIBLE_CHANCE_MONEY;
-        float candyRange = Constants.COLLECTIBLE_CHANCE_CANDY * (100 / sum);
-        float flameRange = Constants.COLLECTIBLE_CHANCE_FLAME * (100 / sum);
-        float moneyRange = Constants.COLLECTIBLE_CHANCE_MONEY * (100 / sum);
-        float lollipopRange = Constants.COLLECTIBLE_CHANCE_LOLLIPOP * (100 / sum);
+        float sum = Constants.COLLECTIBLE_CANDY_SPAWN_RATE + Constants.COLLECTIBLE_FLAME_SPAWN_RATE +
+                Constants.COLLECTIBLE_LOLLIPOP_SPAWN_RATE + Constants.COLLECTIBLE_MONEY_SPAWN_RATE;
+        candySpawnRate = Constants.COLLECTIBLE_CANDY_SPAWN_RATE * (100 / sum);
+        flameSpawnRate = Constants.COLLECTIBLE_FLAME_SPAWN_RATE * (100 / sum);
+        moneySpawnRate = Constants.COLLECTIBLE_MONEY_SPAWN_RATE * (100 / sum);
+        lollipopSpawnRate = Constants.COLLECTIBLE_LOLLIPOP_SPAWN_RATE * (100 / sum);
         float randomNumber = (float) random.nextInt(100);
-        if (0 <= randomNumber && randomNumber < moneyRange && currentLevel > 1) {
+        if (0 <= randomNumber && randomNumber < moneySpawnRate && currentLevel > 1) {
             entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
         }
-        else if (moneyRange <= randomNumber && randomNumber < moneyRange + flameRange && currentLevel > 1) {
+        else if (moneySpawnRate <= randomNumber && randomNumber < moneySpawnRate + flameSpawnRate && currentLevel > 1) {
             entityFactory.createSmallLoss(x, colY + offset, currentScrollSpeed);
         }
-        else if (moneyRange + flameRange <= randomNumber && randomNumber < moneyRange + flameRange + lollipopRange) {
+        else if (moneySpawnRate + flameSpawnRate <= randomNumber && randomNumber < moneySpawnRate + flameSpawnRate + lollipopSpawnRate) {
             entityFactory.createMediumBonus(x, colY + offset, currentScrollSpeed);
         }
-        else if (moneyRange + flameRange + lollipopRange <= randomNumber && randomNumber < 100) {
+        else if (moneySpawnRate + flameSpawnRate + lollipopSpawnRate <= randomNumber && randomNumber < 100) {
             entityFactory.createSmallBonus(x, colY + offset, currentScrollSpeed);
         }
     }
@@ -202,5 +209,25 @@ public class Spawner {
     private void spawnSkullMaybe() {
         int rand = Lildrak.random.nextInt(2);
         if (rand >= 1) entityFactory.createSkull(5f, 0.5f, -currentScrollSpeed);
+    }
+
+    public float getCandySpawnRate() {
+        return candySpawnRate;
+    }
+
+    public float getLollipopSpawnRate() {
+        return lollipopSpawnRate;
+    }
+
+    public float getMoneySpawnRate() {
+        return moneySpawnRate;
+    }
+
+    public float getFlameSpawnRate() {
+        return flameSpawnRate;
+    }
+
+    public float getPlatformSpawnRate() {
+        return platformSpawnRate;
     }
 }
