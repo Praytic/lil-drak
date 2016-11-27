@@ -36,7 +36,7 @@ public class EntityFactory {
     }
 
     public Entity createSmallLoss(float x, float y, float ySpeed) {
-        return createCollectible(x, y, ySpeed, -2, CollectibleType.FLAME);
+        return createCollectible(x, y, ySpeed, 0, CollectibleType.FLAME);
     }
 
     public Entity createCollectible(float x, float y, float ySpeed, int value, CollectibleType collectibleType) {
@@ -45,8 +45,9 @@ public class EntityFactory {
         float width = collectibleType.getWidth() * Constants.METER_TO_PIXEL;
         float height = collectibleType.getHeight() * Constants.METER_TO_PIXEL;
         if (collectibleType == CollectibleType.FLAME) {
-            entity.add(new FireAnimationComponent(
-                    collectibleType.getTextures().get(0), collectibleType.getTextures().get(1)));
+            entity.add(new FlameAnimationComponent(
+                    collectibleType.getTextures().get(0), collectibleType.getTextures().get(1)))
+                    .add(new DamageComponent(1));
         }
         Texture texture = collectibleType.getTextures().get(0);
         TextureRegion region = new TextureRegion(texture);

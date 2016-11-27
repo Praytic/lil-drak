@@ -76,11 +76,10 @@ public class Spawner {
 
     public void init() {
         difficultySetting = prefs.getInteger("difficulty", 0);
-        // EASY:2.5 MEDIUM:2.0 HARD:1.5
-        currentSpawnRate = Constants.SPAWN_RATE - Constants.SPAWN_RATE_DIFFICULTY_INCREMENT * difficultySetting;
+        currentSpawnRate = Constants.SPAWN_RATE - Constants.SPAWN_RATE_DIFFICULTY_INCREASE * difficultySetting;
         currentScrollSpeed = Constants.SCROLL_SPEED;
         whipTimer = currentSpawnRate;
-        collectibleTimer = Constants.COLLECTIBLE_SPAWN_RATE;
+        collectibleTimer = getCollectibleSpawnRate();
         spawnTimer = Constants.LEVEL_TIME;
         levelChangeTimer = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
         currentLevel = 0;
@@ -104,6 +103,10 @@ public class Spawner {
         currentState = STATE.SPAWN;
     }
 
+    public float getCollectibleSpawnRate() {
+        return Constants.COLLECTIBLE_SPAWN_RATE / (currentLevel == 0 ? 1 : currentLevel);
+    }
+
     public void run(float deltaTime) {
         if (currentState == STATE.SPAWN) {
             spawnTimer -= deltaTime;
@@ -125,7 +128,7 @@ public class Spawner {
 
     private void changeLevel() {
         currentSpawnRate -= Constants.SPAWN_RATE_MODIFIER;
-        currentScrollSpeed *= Constants.SCROLL_SPEED_MODIFIER;
+        currentScrollSpeed += Constants.SCROLL_SPEED_INCREASE;
         levelChangeDuration = Constants.VIEWPORT_HEIGHT / currentScrollSpeed + 2f;
         for (com.badlogic.gdx.physics.box2d.Body e : windowBodies) {
             e.setLinearVelocity(0, currentScrollSpeed);
@@ -133,6 +136,8 @@ public class Spawner {
         spawnSkullMaybe();
 
         currentLevel++;
+        Gdx.app.debug(LoggerTag.LEVEL_UP.toString(), String.valueOf(currentLevel));
+        Gdx.app.debug(LoggerTag.COLLECTIBLE_SPAWN_RATE_UP.toString(), String.valueOf(getCollectibleSpawnRate()));
     }
 
     private void spawnWhips(float deltaTime) {
@@ -146,20 +151,7 @@ public class Spawner {
     private void spawnCollectibles(float deltaTime) {
         if (collectibleTimer > 0) collectibleTimer -= deltaTime;
         else {
-            // spawn collectibles with a collectibleChance and increase likelihood of spawn by difficulty
-            // highest difficulty(3) has 100 % spawn chance
-            float rand = Lildrak.random.nextInt((int) (1 / Constants.COLLECTIBLE_CHANCE));
-            rand += currentLevel;
-            if (rand >= 1) {
-                float x = Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f;
-                spawnRandomCollectible(x);
-            }
-            rand = Lildrak.random.nextInt((int) (1 / Constants.COLLECTIBLE_CHANCE));
-            rand += currentLevel;
-            if (rand >= 1) {
-                float x = Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f;
-                spawnRandomCollectible(x);
-            }
+            spawnRandomCollectible(Lildrak.random.nextFloat() * (Constants.VIEWPORT_WIDTH - 0.5f) + 0.25f);
             collectibleTimer = Constants.COLLECTIBLE_SPAWN_RATE;
         }
     }
@@ -186,19 +178,23 @@ public class Spawner {
     private void spawnRandomCollectible(float x) {
         float offset = Lildrak.random.nextInt(3) / 10.0f - 0.1f;
         Random random = new Random();
-        int randomInt = random.nextInt(100);
-        if (randomInt < 10 && currentLevel > 1) {
-            if (randomInt < 3) {
-                entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
-            }
-            else {
-                entityFactory.createSmallLoss(x, colY + offset, currentScrollSpeed);
-            }
+        float sum = Constants.COLLECTIBLE_CHANCE_CANDY + Constants.COLLECTIBLE_CHANCE_FLAME +
+                Constants.COLLECTIBLE_CHANCE_LOLLIPOP + Constants.COLLECTIBLE_CHANCE_MONEY;
+        float candyRange = Constants.COLLECTIBLE_CHANCE_CANDY * (100 / sum);
+        float flameRange = Constants.COLLECTIBLE_CHANCE_FLAME * (100 / sum);
+        float moneyRange = Constants.COLLECTIBLE_CHANCE_MONEY * (100 / sum);
+        float lollipopRange = Constants.COLLECTIBLE_CHANCE_LOLLIPOP * (100 / sum);
+        float randomNumber = (float) random.nextInt(100);
+        if (0 <= randomNumber && randomNumber < moneyRange && currentLevel > 1) {
+            entityFactory.createLargeBonus(x, colY + offset, currentScrollSpeed);
         }
-        else if (randomInt < 20) {
+        else if (moneyRange <= randomNumber && randomNumber < moneyRange + flameRange && currentLevel > 1) {
+            entityFactory.createSmallLoss(x, colY + offset, currentScrollSpeed);
+        }
+        else if (moneyRange + flameRange <= randomNumber && randomNumber < moneyRange + flameRange + lollipopRange) {
             entityFactory.createMediumBonus(x, colY + offset, currentScrollSpeed);
         }
-        else if (randomInt < 40) {
+        else if (moneyRange + flameRange + lollipopRange <= randomNumber && randomNumber < 100) {
             entityFactory.createSmallBonus(x, colY + offset, currentScrollSpeed);
         }
     }

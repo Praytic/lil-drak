@@ -25,7 +25,7 @@ public class PhysicsSystem extends IteratingSystem
         tc.x = position.x / Constants.METER_TO_PIXEL;
         tc.y = position.y / Constants.METER_TO_PIXEL;
         // body angle is in rads, so it needs to be converted to degrees
-        float angle = bc.getBody().getAngle() / Constants.DEGTORAD;
+        float angle = bc.getBody().getAngle() / Constants.DEG_TO_RAD;
         tc.angle = angle;
     }
 }
