@@ -5,7 +5,6 @@ public interface Asset {
     enum Image implements Asset {
 
         BACKGROUND("data/splash.png"),
-        INTRO("data/intro.png"),
         FADE("data/fade.png"),
         FADE_BLACK("data/fadeblack.png"),
         BLACK("data/black.png"),

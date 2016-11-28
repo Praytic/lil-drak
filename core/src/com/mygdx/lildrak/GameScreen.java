@@ -1,12 +1,10 @@
 package com.mygdx.lildrak;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.lildrak.entity.EntityFactory;
@@ -20,46 +18,42 @@ public class GameScreen extends ScreenAdapter {
 
     public static int score;
     public static int playerHealth;
+
     @Autowired
     private EntityFactory entityFactory;
-    Box2DDebugRenderer debugRenderer;
-    OrthographicCamera camera;
     @Autowired
     private Hud hud;
     @Autowired
     private CustomGame game;
     @Autowired
     private World world;
-    Entity player;
-    Room room;
     @Autowired
     private Spawner spawner;
     @Autowired
     private StartScreenAdapter startScreen;
     @Autowired
     private Engine engine;
+
     private boolean isCreated = false;
 
     public void initialize() {
         if (isCreated) {
             spawner.init();
-            player = entityFactory.createBat(2f, 1f);
+            entityFactory.createBat(2f, 1f);
             score = 0;
             playerHealth = Constants.PLAYER_HEALTH;
-            return;
         }
-        camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-        debugRenderer = new Box2DDebugRenderer();
-        room = new Room(world);
-
-        spawner.init();
-        player = entityFactory.createBat(2f, 1f);
-        score = 0;
-        playerHealth = Constants.PLAYER_HEALTH;
-
-        isCreated = true;
+        else {
+            OrthographicCamera camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
+            camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+            camera.update();
+            spawner.init();
+            new Room(world);
+            entityFactory.createBat(2f, 1f);
+            score = 0;
+            playerHealth = Constants.PLAYER_HEALTH;
+            isCreated = true;
+        }
     }
 
     @Override

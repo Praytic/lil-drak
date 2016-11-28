@@ -2,7 +2,6 @@ package com.mygdx.lildrak;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -13,17 +12,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.mygdx.lildrak.CustomApplicationAdapter.spriteBatch;
-
 @Component
 public class LoadScreen extends ScreenAdapter {
 
-    private Texture intro;
     private Sprite fadeBox;
     private Color fadeBoxColor;
     private int fadeDirection = -1;
     private Music music;
-    private float minimumShowTime = 100;
 
     @Autowired
     private StartScreenAdapter startScreen;
@@ -37,19 +32,8 @@ public class LoadScreen extends ScreenAdapter {
         getMusic();
         Gdx.gl.glClearColor(0.5f, 0.5f, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        spriteBatch.begin();
-        spriteBatch.draw(getIntro(), 0, 0);
         updateFadeBoxColor();
-        getFadeBox().draw(spriteBatch);
-        spriteBatch.end();
-
-        minimumShowTime -= deltaTime;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            minimumShowTime = 0;
-        }
-
-        if (assetManager.update() && minimumShowTime <= 0) {
+        if (assetManager.update()) {
             game.setScreen(startScreen);
             getMusic().stop();
         }
@@ -69,19 +53,8 @@ public class LoadScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        intro.dispose();
         fadeBox.getTexture().dispose();
         getMusic().dispose();
-    }
-
-    public Texture getIntro() {
-        if (intro == null) {
-            intro = new Texture(Asset.Image.INTRO.getFileName());
-            return intro;
-        }
-        else {
-            return intro;
-        }
     }
 
     public Sprite getFadeBox() {

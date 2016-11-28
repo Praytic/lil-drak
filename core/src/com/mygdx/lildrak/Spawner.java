@@ -25,47 +25,47 @@ public class Spawner {
     @Autowired
     private Engine engine;
 
-    Preferences prefs;
-    int difficultySetting; // from preferences
-    int currentLevel = 0;
-    float levelChangeDuration = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
-    float currentSpawnRate;
-    float currentScrollSpeed = Constants.SCROLL_SPEED;
-    float colY = -0.4f; // y of collectible spawns(positioned above whip spawns)
-    float whipTimer;
-    float collectibleTimer;
-    float spawnTimer;
-    float levelChangeTimer;
+    private Preferences prefs;
+    private int difficultySetting; // from preferences
+    private int currentLevel = 0;
+    private float levelChangeDuration = Constants.VIEWPORT_HEIGHT / Constants.SCROLL_SPEED;
+    private float currentSpawnRate;
+    private float currentScrollSpeed = Constants.SCROLL_SPEED;
+    private float colY = -0.4f; // y of collectible spawns(positioned above whip spawns)
+    private float whipTimer;
+    private float collectibleTimer;
+    private float spawnTimer;
+    private float levelChangeTimer;
     private float candySpawnRate;
     private float lollipopSpawnRate;
     private float moneySpawnRate;
     private float flameSpawnRate;
 
-    List<Float> gauntlet1a = new ArrayList<Float>(Arrays.asList(2.2f, 3.5f));
-    List<Float> gauntlet1b = new ArrayList<Float>(Arrays.asList(0.6f, 1.8f));
-    List<Float> gauntlet1c = new ArrayList<Float>(Arrays.asList(0.7f, 3.3f));
-    List<Float> gauntlet1d = new ArrayList<Float>(Arrays.asList(3.3f));
-    List<Float> gauntlet1e = new ArrayList<Float>(Arrays.asList(0.7f));
-    List<Float> gauntlet1f = new ArrayList<Float>(Arrays.asList(2.0f));
-    List<Float> gauntlet2a = new ArrayList<Float>(Arrays.asList(0.5f, 2.8f, 4.1f));
-    List<Float> gauntlet2b = new ArrayList<Float>(Arrays.asList(-0.1f, 2.0f, 3.3f));
-    List<Float> gauntlet2c = new ArrayList<Float>(Arrays.asList(-0.1f, 1.2f, 3.5f));
-    List<Float> gauntlet2d = new ArrayList<Float>(Arrays.asList(0.7f, 2.0f, 4.1f));
-    List<Float> gauntlet2e = new ArrayList<Float>(Arrays.asList(2.0f));
-    List<Float> gauntlet2f = new ArrayList<Float>(Arrays.asList(2.4f, 3.7f));
-    List<Float> gauntlet2g = new ArrayList<Float>(Arrays.asList(1.3f, 2.6f));
-    List<Float> gauntlet2i = new ArrayList<Float>(Arrays.asList(0f, 2.0f, 4.1f));
-    List<Float> gauntlet3a = new ArrayList<Float>(Arrays.asList(1.0f, 2.4f));
-    List<Float> gauntlet3b = new ArrayList<Float>(Arrays.asList(1.5f, 2.9f));
-    List<Float> gauntlet3c = new ArrayList<Float>(Arrays.asList(1.2f, 3.3f));
-    List<Float> gauntlet3d = new ArrayList<Float>(Arrays.asList(0.7f, 2.7f));
-    List<Float> gauntlet3e = new ArrayList<Float>(Arrays.asList(-0.5f, 1.6f, 2.9f));
-    List<Float> gauntlet3f = new ArrayList<Float>(Arrays.asList(1.0f, 2.4f, 4.5f));
+    private List<Float> gauntlet1a = new ArrayList<Float>(Arrays.asList(2.2f, 3.5f));
+    private List<Float> gauntlet1b = new ArrayList<Float>(Arrays.asList(0.6f, 1.8f));
+    private List<Float> gauntlet1c = new ArrayList<Float>(Arrays.asList(0.7f, 3.3f));
+    private List<Float> gauntlet1d = new ArrayList<Float>(Arrays.asList(3.3f));
+    private List<Float> gauntlet1e = new ArrayList<Float>(Arrays.asList(0.7f));
+    private List<Float> gauntlet1f = new ArrayList<Float>(Arrays.asList(2.0f));
+    private List<Float> gauntlet2a = new ArrayList<Float>(Arrays.asList(0.5f, 2.8f, 4.1f));
+    private List<Float> gauntlet2b = new ArrayList<Float>(Arrays.asList(-0.1f, 2.0f, 3.3f));
+    private List<Float> gauntlet2c = new ArrayList<Float>(Arrays.asList(-0.1f, 1.2f, 3.5f));
+    private List<Float> gauntlet2d = new ArrayList<Float>(Arrays.asList(0.7f, 2.0f, 4.1f));
+    private List<Float> gauntlet2e = new ArrayList<Float>(Arrays.asList(2.0f));
+    private List<Float> gauntlet2f = new ArrayList<Float>(Arrays.asList(2.4f, 3.7f));
+    private List<Float> gauntlet2g = new ArrayList<Float>(Arrays.asList(1.3f, 2.6f));
+    private List<Float> gauntlet2i = new ArrayList<Float>(Arrays.asList(0f, 2.0f, 4.1f));
+    private List<Float> gauntlet3a = new ArrayList<Float>(Arrays.asList(1.0f, 2.4f));
+    private List<Float> gauntlet3b = new ArrayList<Float>(Arrays.asList(1.5f, 2.9f));
+    private List<Float> gauntlet3c = new ArrayList<Float>(Arrays.asList(1.2f, 3.3f));
+    private List<Float> gauntlet3d = new ArrayList<Float>(Arrays.asList(0.7f, 2.7f));
+    private List<Float> gauntlet3e = new ArrayList<Float>(Arrays.asList(-0.5f, 1.6f, 2.9f));
+    private List<Float> gauntlet3f = new ArrayList<Float>(Arrays.asList(1.0f, 2.4f, 4.5f));
 
-    List<Float> lastGauntlet;
-    List<Float> currentGauntlet;
+    private List<Float> lastGauntlet;
+    private List<Float> currentGauntlet;
 
-    List<List<Float>> gauntletList = new ArrayList<List<Float>>
+    private List<List<Float>> gauntletList = new ArrayList<List<Float>>
             (Arrays.asList(gauntlet1a, gauntlet1a, gauntlet1b, gauntlet1b,
                     gauntlet1c, gauntlet1c, gauntlet1d, gauntlet1d,
                     gauntlet1e, gauntlet1e, gauntlet1f, gauntlet1f,
@@ -74,14 +74,26 @@ public class Spawner {
                     gauntlet2e, gauntlet2e, gauntlet2g, gauntlet2f,
                     gauntlet2i, gauntlet3a, gauntlet3b, gauntlet3c,
                     gauntlet3d, gauntlet3e, gauntlet3f));
-    int streakCounter;
-    int maxStreak = 2;
+    private int streakCounter;
+    private int maxStreak = 2;
 
-    List<com.badlogic.gdx.physics.box2d.Body> windowBodies = new ArrayList<com.badlogic.gdx.physics.box2d.Body>();
+    private List<com.badlogic.gdx.physics.box2d.Body> windowBodies = new ArrayList<com.badlogic.gdx.physics.box2d.Body>();
 
-    enum STATE {SPAWN, LEVEL_CHANGE}
+    public float getCurrentSpawnRate() {
+        return currentSpawnRate;
+    }
 
-    static STATE currentState;
+    public float getCurrentScrollSpeed() {
+        return currentScrollSpeed;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    private enum STATE {SPAWN, LEVEL_CHANGE}
+
+    private STATE currentState;
 
     public void init() {
         prefs = Gdx.app.getPreferences("My Preferences");
